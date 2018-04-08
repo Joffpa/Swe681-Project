@@ -1,7 +1,6 @@
 package swe681;
 
 import swe681.resources.DataDriver;
-import swe681.resources.IAMDatabaseAuthenticationTester;
 import java.sql.ResultSet;
 
 public class testRunner {
