@@ -18,6 +18,7 @@
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>*.jsf</url-pattern>
     <url-pattern>*.xhtml</url-pattern>
+    <url-pattern>*.jsp</url-pattern>
   </servlet-mapping>
 
 </web-app>
