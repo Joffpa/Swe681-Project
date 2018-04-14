@@ -3,32 +3,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core">
-
 <h:head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Welcome to GO!</title>
+<title>Create Account</title>
 </h:head>
 <h:body>
 	<fieldset>
-		<legend>Login</legend>
+		<legend>Create Account</legend>
 	
 		<h:messages styleClass="error" />
 		<h:form>
 				Username
-				<h:inputText id="usernameTxt" value="#{loginBean.username}">
+				<h:inputText id="usernameTxt" value="#{createAccountBean.username}">
 				</h:inputText>
 				<br />
 				<br />
 				Password
-				<h:inputSecret id="passwordTxt" value="#{loginBean.password}">
+				<h:inputSecret id="passwordTxt" value="#{createAccountBean.password}">
+				</h:inputSecret>
+				<br />
+				<br />				
+				Confirm Password
+				<h:inputSecret id="passwordConfirmTxt" value="#{createAccountBean.passwordConfirm}">
 				</h:inputSecret>
 				<br />
 				<br />
 			
-			<h:commandButton value="Login" action="#{loginBean.login}"></h:commandButton>		
+			<h:commandButton value="Create Account" action="#{createAccountBean.createAccount}"></h:commandButton>
+			
 				<br />
 				<br />
-			<h:commandButton value="Create Account" action="#{loginBean.createAccount}"></h:commandButton>	
+			<h:commandButton value="Return" action="#{createAccountBean.returnToWelcome}"></h:commandButton>
+			
 		</h:form>
 	</fieldset>
 </h:body>

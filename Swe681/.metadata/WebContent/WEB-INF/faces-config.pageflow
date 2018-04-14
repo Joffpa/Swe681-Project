@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pageflow:Pageflow xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf15184730384660" configfile="/Swe681/WebContent/WEB-INF/faces-config.xml"/>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf15184730384660" configfile="/Swe681/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="Welcome.xhtml" x="228" y="120" id="pf15232340061580" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf15232340061581 pf15237160022620" inlinks="pf15237160022621" path="/Welcome.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="LandingPage.xhtml" x="881" y="118" id="pf15232340061582" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf15232340061581 pf15237178514643" path="/LandingPage.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="CreateAccount.xhtml" x="336" y="360" id="pf15237160022622" outlinks="pf15237160022621 pf15237178514644" inlinks="pf15237160022620" path="/CreateAccount.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="AccountCreated.xhtml" x="672" y="360" id="pf15237178514645" outlinks="pf15237178514643" inlinks="pf15237178514644" path="/AccountCreated.xhtml"/>
+  <links id="pf15232340061581" target="pf15232340061582" source="pf15232340061580" outcome="LandingPage" fromaction="#{loginBean.login}"/>
+  <links id="pf15237160022620" target="pf15237160022622" source="pf15232340061580" outcome="CreateAccount" fromaction="#{loginBean.createAccount}"/>
+  <links id="pf15237160022621" target="pf15232340061580" source="pf15237160022622" outcome="Welcome" fromaction="#{createAccountBean.returnToWelcome}"/>
+  <links id="pf15237178514644" target="pf15237178514645" source="pf15237160022622" outcome="AccountCreated" fromaction="#{createAccountBean.createAccount}"/>
+  <links id="pf15237178514643" target="pf15232340061582" source="pf15237178514645"/>
+</pageflow:Pageflow>
