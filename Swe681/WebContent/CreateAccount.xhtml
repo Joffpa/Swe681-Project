@@ -13,8 +13,13 @@
 	
 		<h:messages styleClass="error" />
 		<h:form>
-				Username
+				User Name (Visible to other players)
 				<h:inputText id="usernameTxt" value="#{createAccountBean.username}">
+				</h:inputText>
+				<br />
+				<br />		
+				Login Name (Used only for login)
+				<h:inputText id="usernameTxt" value="#{createAccountBean.loginname}">
 				</h:inputText>
 				<br />
 				<br />
@@ -27,14 +32,11 @@
 				<h:inputSecret id="passwordConfirmTxt" value="#{createAccountBean.passwordConfirm}">
 				</h:inputSecret>
 				<br />
-				<br />
-			
-			<h:commandButton value="Create Account" action="#{createAccountBean.createAccount}"></h:commandButton>
-			
+				<br />			
+				<h:commandButton value="Create Account" action="#{createAccountBean.createAccount}"></h:commandButton>			
 				<br />
 				<br />
-			<h:commandButton value="Return" action="#{createAccountBean.returnToWelcome}"></h:commandButton>
-			
+				<h:commandButton value="Return" action="#{createAccountBean.returnToWelcome}"></h:commandButton>			
 		</h:form>
 	</fieldset>
 </h:body>

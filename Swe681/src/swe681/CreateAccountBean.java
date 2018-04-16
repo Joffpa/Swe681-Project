@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 @RequestScoped
 public class CreateAccountBean extends BaseBean {
 	public String username = "";
+	public String loginname = "";
 	public String password = "";
 	public String passwordConfirm = "";
 	
@@ -16,9 +17,10 @@ public class CreateAccountBean extends BaseBean {
 		super();
 	}
 	
-	public CreateAccountBean(String username, String password, String passwordConfirm) {
+	public CreateAccountBean(String username, String loginname, String password, String passwordConfirm) {
 		super();
 		this.username = username;
+		this.loginname = loginname;
 		this.password = password;
 		this.passwordConfirm = passwordConfirm;
 	}
@@ -29,6 +31,14 @@ public class CreateAccountBean extends BaseBean {
 	
 	public String getUsername() {
 		return username;
+	}
+	
+	public void setLoginname(String x) {
+		this.loginname = x.trim();
+	}
+	
+	public String getLoginname() {
+		return loginname;
 	}
 	
 	public void setPassword(String x) {

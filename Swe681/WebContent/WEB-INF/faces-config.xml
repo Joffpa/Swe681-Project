@@ -5,11 +5,6 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
     version="2.2">
 	<managed-bean>
-		<managed-bean-name>testRunner</managed-bean-name>
-		<managed-bean-class>swe681.testRunner</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
 		<managed-bean-name>loginBean</managed-bean-name>
 		<managed-bean-class>swe681.LoginBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
@@ -17,6 +12,11 @@
 	<managed-bean>
 		<managed-bean-name>createAccountBean</managed-bean-name>
 		<managed-bean-class>swe681.CreateAccountBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>landingPageBean</managed-bean-name>
+		<managed-bean-class>swe681.LandingPageBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
 	<navigation-rule>
@@ -60,6 +60,44 @@
 		<from-view-id>/AccountCreated.xhtml</from-view-id>
 		<navigation-case>
 			<to-view-id>/LandingPage.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>LandingPage.xhtml</display-name>
+		<from-view-id>/LandingPage.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>WinLoss</from-outcome>
+			<to-view-id>/WinLoss.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>LandingPage.xhtml</display-name>
+		<from-view-id>/LandingPage.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>History</from-outcome>
+			<to-view-id>/History.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>History.xhtml</display-name>
+		<from-view-id>/History.xhtml</from-view-id>
+		<navigation-case>
+			<to-view-id>/LandingPage.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>WinLoss.xhtml</display-name>
+		<from-view-id>/WinLoss.xhtml</from-view-id>
+		<navigation-case>
+			<to-view-id>/LandingPage.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>LandingPage.xhtml</display-name>
+		<from-view-id>/LandingPage.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>NewGame</from-outcome>
+			<to-view-id>/Game.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

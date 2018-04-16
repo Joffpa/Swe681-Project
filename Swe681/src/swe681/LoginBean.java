@@ -1,34 +1,39 @@
 package swe681;
 
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
+
+import swe681.resources.AppLog;
+
+import java.util.logging.Logger;
+
+
 import javax.faces.bean.ManagedBean;
 
 @ManagedBean
 @RequestScoped
 public class LoginBean extends BaseBean {
-	public String username = "";
+	public String loginname = "";
 	public String password = "";
+	
 	
 	public LoginBean() {
 		super();
+		System.out.println(getClass().getClassLoader().getResource("logging.properties"));
 	}
 	
-	public LoginBean(String username, String password) {
+	public LoginBean(String loginname, String password) {
 		super();
-		this.username = username;
+		this.loginname = loginname;
 		this.password = password;
 	}
 	
-	public void setUsername(String x) {
-		this.username = x.trim();
+	public void setLoginname(String x) {
+		this.loginname = x.trim();
 	}
 	
-	public String getUsername() {
-		return username;
+	public String getLoginname() {
+		return loginname;
 	}
-	
 	public void setPassword(String x) {
 		this.password = x;
 	}
@@ -40,6 +45,7 @@ public class LoginBean extends BaseBean {
 		//TODO: add login logic here
 		boolean loginSuccess = true;
 		if(loginSuccess) {
+			AppLog.getLogger().info("Login success");
 			return "LandingPage";
 		}
 		//returning null re-displays current page, any errors 
