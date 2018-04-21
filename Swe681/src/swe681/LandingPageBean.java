@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
@@ -19,13 +20,20 @@ public class LandingPageBean extends BaseBean {
 		super();
 	}
 	
+	@PostConstruct
+	public void init() {
+		// In @PostConstruct (will be invoked immediately after construction and
+		// dependency/property injection).
+		DataDriver driver = new DataDriver();
+		this.allJoinableGames = driver.getGameInstanceJoinable();
+	}
+
+	
 	public void setAllJoinableGames(LinkedList<GameInstance> games) {
 		this.allJoinableGames = games;
 	}
 	
 	public List<GameInstance> getAllJoinableGames(){
-		DataDriver driver = new DataDriver();
-		this.allJoinableGames = driver.getGameInstanceJoinable();
 		return this.allJoinableGames;
 	}	
 	

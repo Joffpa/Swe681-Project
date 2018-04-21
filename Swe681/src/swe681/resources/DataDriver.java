@@ -41,7 +41,7 @@ public class DataDriver {
 			PreparedStatement pStmt = conn.prepareStatement(
 					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn, Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore "
 					+ " from GameInstance "
-					+ " where player2 is null and CurrentState = 'inprogress'");
+					+ " where Player2 is null and CurrentState = 'inprogress'");
 			rs = pStmt.executeQuery(); 
 		} catch (Exception e) {
 			AppLog.getLogger()
@@ -50,9 +50,37 @@ public class DataDriver {
 		return rs;
 	}
 
-	public ArrayList<GameInstance> getGameInstanceJoinable() {
-		ArrayList ll = new ArrayList<GameInstance>();
+	public ArrayList<GameInstance> getGameInstanceJoinable() {		
 		ResultSet rs = getGameInstanceJoinableRS();
+		return mapResultSetToGameInstance(rs);		
+	}
+	
+	
+	private ResultSet getGameHistoryRS(String playerLoginName) {
+		ResultSet rs = null;
+		try {
+			PreparedStatement pStmt = conn.prepareStatement(
+					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn, Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore "
+					+ " from GameInstance "
+					+ " where (Player2 = ? or Player1 = ?) and CurrentState = 'done'");
+			pStmt.setString(1, playerLoginName);
+			pStmt.setString(2, playerLoginName);
+			rs = pStmt.executeQuery(); 
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.getGameHistoryRS: " + e.getMessage());
+		}
+		return rs;
+	}
+	
+	public ArrayList<GameInstance> getGameHistoryForPlayer(String playerLoginName){
+		ResultSet rs = getGameHistoryRS(playerLoginName);
+		return mapResultSetToGameInstance(rs);
+	}
+	
+
+	private ArrayList<GameInstance> mapResultSetToGameInstance(ResultSet rs){		
+		ArrayList ll = new ArrayList<GameInstance>();
 		try {
 
 			// Fetch each row from the result set
@@ -67,7 +95,6 @@ public class DataDriver {
 				int player1FinalScore = rs.getInt("Player1FinalScore");
 				int player2FinalScore = rs.getInt("Player2FinalScore");
 
-				// Assuming you have a user object
 				GameInstance game = new GameInstance();
 				game.gameId = gameId;
 				game.player1 = player1;
@@ -81,26 +108,54 @@ public class DataDriver {
 
 				ll.add(game);
 			}
-		} catch (SQLException se) {
-			AppLog.getLogger().severe("Exception in DataDriver.getGameInstanceJoinable: " + se.getMessage());
+		} catch (Exception se) {
+			AppLog.getLogger().severe("Exception in DataDriver.mapResultSetToGameInstance: " + se.getMessage());
 		}
 		return ll;
 	}
-
-	public static boolean setGenericField(Object object, String fieldName, Object fieldValue) {
-		Class<?> clazz = object.getClass();
-		while (clazz != null) {
-			try {
-				Field field = clazz.getDeclaredField(fieldName);
-				field.setAccessible(true);
-				field.set(object, fieldValue);
-				return true;
-			} catch (NoSuchFieldException e) {
-				clazz = clazz.getSuperclass();
-			} catch (Exception e) {
-				throw new IllegalStateException(e);
-			}
+	
+	public ArrayList<GameLog> getGameLogForInstance(double gameId){
+		ResultSet rs = getGameLogForInstanceResultSet(gameId);
+		return mapResultSetToGameLog(rs);		
+	}
+	
+	private ResultSet getGameLogForInstanceResultSet(double gameId) {
+		ResultSet rs = null;
+		try {
+			PreparedStatement pStmt = conn.prepareStatement(
+					"select GameId, Player, MovePlayed, DatePlayed "
+					+ " from GameLog "
+					+ " where GameId = ? ");
+			pStmt.setDouble(1, gameId);
+			rs = pStmt.executeQuery(); 
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.getGameLogForInstanceResultSet: " + e.getMessage());
 		}
-		return false;
+		return rs;
+	}
+	
+	private ArrayList<GameLog> mapResultSetToGameLog(ResultSet rs){
+		ArrayList ll = new ArrayList<GameLog>();
+		try {
+
+			// Fetch each row from the result set
+			while (rs.next()) {
+				int gameId = rs.getInt("GameId");
+				String player = rs.getString("Player");
+				String move = rs.getString("MovePlayed");
+				Timestamp time = rs.getTimestamp("DatePlayed");
+				
+				GameLog log = new GameLog();
+				log.gameId = gameId;
+				log.player = player;
+				log.movePlayed = move;
+				log.datePlayed = time;
+				ll.add(log);
+			}
+		} catch (Exception se) {
+			AppLog.getLogger().severe("Exception in DataDriver.mapResultSetToGameLog: " + se.getMessage());
+		}
+		return ll;
 	}
 }

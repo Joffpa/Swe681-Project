@@ -104,13 +104,28 @@ insert into UserProfile(
                 Losses)
 SELECT 'User1', 'User1', '123', '123', null, 0, 0 from dual
 union all
-SELECT 'User2', 'User2', '123', '123', null, 0, 0 from dual;
+SELECT 'User2', 'User2', '123', '123', null, 0, 0 from dual
+union all
+SELECT 'User3', 'User3', '123', '123', null, 0, 0 from dual;
 
 insert into GameInstance(
     Player1,
-    CurrentPlayerTurn
+    CurrentPlayerTurn,
+    CurrentState
 )
-select 'User1', 'User1' from dual;
+select 'User1', 'User2', 'inprogress' from dual;
+
+insert into GameInstance(
+    Player1,
+    Player2,
+    CurrentState,    
+    CurrentPlayerTurn,
+    Player1Prisoners,
+    Player2Prisoners,
+    Player1FinalScore,
+    Player2FinalScore
+)
+select 'User1', 'User3', 'done', 'User3', 4, 5, 16, 18 from dual;
 
 insert into GameState(
     GameId , 
@@ -124,6 +139,10 @@ select MAX(GameId),
     'User1'
 from GameInstance;
 
+
+
+
+
 insert into GameLog(
     GameId , 
     Player ,
@@ -134,12 +153,23 @@ select MAX(GameId),
 'A1'
 from GameInstance;
 
+
+insert into GameLog(
+    GameId , 
+    Player ,
+    MovePlayed ,
+    DatePlayed
+)
+select MAX(GameId),
+'User3',
+'B2',
+SYSDATE + (1/1440*5)
+from GameInstance;
+
 --select * from UserProfile;
 --select * from GameInstance;
 --select * from GameState;
 --select * from GameLog;
-
-
 
 
 

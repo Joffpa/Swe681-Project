@@ -19,6 +19,11 @@
 		<managed-bean-class>swe681.LandingPageBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>historyBean</managed-bean-name>
+		<managed-bean-class>swe681.HistoryBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
 	<navigation-rule>
 		<display-name>Welcome.xhtml</display-name>
 		<from-view-id>/Welcome.xhtml</from-view-id>
