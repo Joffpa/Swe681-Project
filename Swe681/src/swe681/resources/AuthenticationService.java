@@ -19,16 +19,16 @@ public class AuthenticationService {
 		return user;
 	}
 	
-	public boolean createAccount(String userName, String loginname, String password) {
+	public UserProfile createAccount(String userName, String loginname, String password) {
 		//TODO: check if account info is valid and create account
 		//Check that username/login name not in database
 		//if not taken, create a salt (random number)
 		//hash password with the salt
 		//insert new user info into database
-		//return true if success, false otherwise
+		//return the user proflie object we just made if the account is created, otherwise return null
 		
 		
-		return true;
+		return null;
 	}
 	
 }

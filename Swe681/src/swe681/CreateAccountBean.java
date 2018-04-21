@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import swe681.resources.AppLog;
 import swe681.resources.AuthenticationService;
+import swe681.resources.UserProfile;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -82,10 +83,16 @@ public class CreateAccountBean extends BaseBean {
 			
 			// if we got here, then all validations passed			
 			AuthenticationService auth = new AuthenticationService();			
-			if (auth.createAccount(this.username, this.loginname, this.password)) {
+			UserProfile user = auth.createAccount(this.username, this.loginname, this.password);
+			if (user!= null) {
+				//put the logged in user object in session
+		        FacesContext context = FacesContext.getCurrentInstance();
+	            context.getExternalContext().getSessionMap().put("user", user);
 				return "AccountCreated";
-			}
-			
+			}else {
+				FacesContext.getCurrentInstance().addMessage("",
+						new FacesMessage("New account creation failed, please enter a unique username and loginname."));
+			}			
 		} catch (Exception e) {
 			AppLog.getLogger().severe("Exception in  CreateAccountBean.createAccount(): " + e.getMessage());
 		}
