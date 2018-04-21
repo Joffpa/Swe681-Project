@@ -5,6 +5,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
 import swe681.resources.AppLog;
+import swe681.resources.AuthenticationService;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -68,22 +69,20 @@ public class CreateAccountBean extends BaseBean {
 					|| this.passwordConfirm == null && this.passwordConfirm.isEmpty()) {
 				FacesContext.getCurrentInstance().addMessage("",
 						new FacesMessage("You must enter a login name, password, and password confirmation."));
-
 				return null;
 			}
 
 			if (!this.loginname.matches("^([A-Za-z0-9]{6,12})$")) {
-
 				FacesContext.getCurrentInstance().addMessage("",
 						new FacesMessage("Username must be between 6 and 12 characters, and alphanumeric only."));
-
 				return null;
 			}
-
 			
-			// if we got here, then all validations passed
-			boolean accountCreated = true;
-			if (accountCreated) {
+			//TODO: Add more input validations
+			
+			// if we got here, then all validations passed			
+			AuthenticationService auth = new AuthenticationService();			
+			if (auth.createAccount(this.username, this.loginname, this.password)) {
 				return "AccountCreated";
 			}
 			

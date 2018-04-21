@@ -5,6 +5,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 
 import swe681.resources.AppLog;
+import swe681.resources.AuthenticationService;
+import swe681.resources.UserProfile;
 
 import java.util.logging.Logger;
 
@@ -52,10 +54,19 @@ public class LoginBean extends BaseBean {
 			return null;
 		}
 		
+		//TODO: Addtional input validations
+		
 		//TODO: add login logic here
-		boolean loginSuccess = true;
-		if(loginSuccess) {
-			AppLog.getLogger().info("Login success");
+		AuthenticationService auth = new AuthenticationService();
+		UserProfile user = auth.loginUser(this.loginname, this.password);
+		
+		if(user != null) {
+			
+			//put the logged in user object in session
+	        FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().getSessionMap().put("user", user);
+			
+			AppLog.getLogger().info("Login success, login name: " + user.getLoginname());
 			return "LandingPage";
 		}
 		//returning null re-displays current page, any errors 		

@@ -38,6 +38,10 @@ public class LandingPageBean extends BaseBean {
 	}	
 	
 	public String joinGame(GameInstance game) {
+		//TODO: check to make sure user is allowed to join this game
+		//if true, redirect to game page
+		
+		
 		return null; 
 	}
 }
