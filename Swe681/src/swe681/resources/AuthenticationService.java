@@ -15,7 +15,7 @@ public class AuthenticationService {
 		//6 if they dont match, return null		
 		
 		UserProfile user = new UserProfile();
-		user.loginname = "User1";
+		user.loginname = loginName;
 		user.currentGameId = 1;
 		return user;
 	}

@@ -9,6 +9,7 @@ public class UserProfile {
 	public int currentGameId;
 	public int wins;
 	public int losses;
+	public boolean isInGame;
 
 	public String getUsername() {
 		return this.username;
@@ -44,6 +45,10 @@ public class UserProfile {
 
 	public int getCurrentGameId() {
 		return this.currentGameId;
+	}
+	
+	public boolean getIsInGame() {
+		return this.currentGameId > 0;
 	}
 
 	public void setCurrentGameId(int id) {

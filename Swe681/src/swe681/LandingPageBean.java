@@ -39,6 +39,8 @@ public class LandingPageBean extends BaseBean {
 	
 	public String joinGame(GameInstance game) {
 		//TODO: check to make sure user is allowed to join this game
+		// is the player already in a game? 
+		
 		//if true, redirect to game page
 		
 		
