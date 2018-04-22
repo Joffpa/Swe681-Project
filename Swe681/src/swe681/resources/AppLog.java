@@ -17,6 +17,7 @@ public class AppLog {
 		return LOGGER;
 	}
 	
+	//TODO: set log file if you want to store logs on server, this is turned off for testing purposes here
     private void configLogger() {
         FileHandler fh;  
 

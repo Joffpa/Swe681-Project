@@ -115,5 +115,13 @@
 			<to-view-id>/Game.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+	<navigation-rule>
+		<display-name>Game.xhtml</display-name>
+		<from-view-id>/Game.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>LandingPage</from-outcome>
+			<to-view-id>/LandingPage.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 
 </faces-config>

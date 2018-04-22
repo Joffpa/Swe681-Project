@@ -1,16 +1,16 @@
 package swe681;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
+import swe681.resources.ContextHelper;
+import swe681.resources.DataDriver;
+
 public class BaseBean {
 
-	//protected static Logger LOGGER = Logger.getLogger("AppLogger");
+
+	public DataDriver dataDriver = new DataDriver();
+	public ContextHelper contextHelper = new ContextHelper();
 	
 	public BaseBean() {
 		setHeaders();
@@ -21,23 +21,5 @@ public class BaseBean {
         HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
         response.setHeader("Cache-Control", "no-cache, no-store");
     }
-    
-//    public void configLogger() {
-//        FileHandler fh;  
-//
-//        try {  
-//
-//            // This block configure the logger with handler and formatter  
-//            fh = new FileHandler("C:\\logfile.log");  
-//            LOGGER.addHandler(fh);
-//            SimpleFormatter formatter = new SimpleFormatter();  
-//            fh.setFormatter(formatter);   
-//
-//        } catch (SecurityException e) {  
-//            e.printStackTrace();  
-//        } catch (IOException e) {  
-//            e.printStackTrace();  
-//        }  
-//    }
-    
+        
 }

@@ -20,6 +20,8 @@ public class GameBean {
 	public String submittedMove;
 	public String submittedCapture;
 	public boolean isLoggedInUsersTurn;
+	public boolean waitingForAnotherPlayer;
+	public boolean isGameOver;
 
 	public String getSubmittedMove() {
 		return this.submittedMove;
@@ -45,6 +47,14 @@ public class GameBean {
 		return this.isLoggedInUsersTurn;
 	}
 
+	public boolean getWaitingForAnotherPlayer() {
+		return this.waitingForAnotherPlayer;
+	}
+
+	public boolean getIsGameOver() {
+		return this.isGameOver;
+	}
+
 	@PostConstruct
 	public void init() {
 		try {
@@ -57,27 +67,45 @@ public class GameBean {
 			DataDriver driver = new DataDriver();
 			this.gameInstance = driver.getGameInstanceDetails(currentUser.currentGameId);
 
+			if(this.gameInstance.currentState.equals("done")) {
+				this.isGameOver = true;
+			}else {
+				this.isGameOver = false;
+			}
+			
 			if (!this.gameInstance.player1.equals(currentUser.loginname)
 					&& !this.gameInstance.player2.equals(currentUser.loginname)) {
 				this.gameInstance = null;
 				FacesContext.getCurrentInstance().addMessage("",
 						new FacesMessage("You are not a valid player for this game."));
+				return;
+			} 
+			
+			if (!this.gameInstance.player1.equals(this.gameInstance.currentPlayerTurn)
+					&& !this.gameInstance.player2.equals(this.gameInstance.currentPlayerTurn)) {
+				this.gameInstance = null;
+				FacesContext.getCurrentInstance().addMessage("",
+						new FacesMessage("Game has entered an illegal state and is invalidated."));
+				// TODO invalidate game
+				this.isLoggedInUsersTurn = false;
+				return;
+			} 
+			
+			//player is valid, and game state is legal
+			//check if we have 2 players
+			if (this.gameInstance.player2 == null) {
+				this.waitingForAnotherPlayer = true;
+				this.isLoggedInUsersTurn = false;
+				return;
+			} 
+			
+			this.waitingForAnotherPlayer = false;
+			if (this.gameInstance.currentPlayerTurn.equals(currentUser.loginname)) {
+				this.isLoggedInUsersTurn = true;
 			} else {
-				if (!this.gameInstance.player1.equals(this.gameInstance.currentPlayerTurn)
-						&& !this.gameInstance.player2.equals(this.gameInstance.currentPlayerTurn)) {
-					this.gameInstance = null;
-					FacesContext.getCurrentInstance().addMessage("",
-							new FacesMessage("Game has entered an illegal state and is invalidated."));
-					// TODO invalidate game
-					this.isLoggedInUsersTurn = false;
-				} else {
-					if (this.gameInstance.currentPlayerTurn.equals(currentUser.loginname)) {
-						this.isLoggedInUsersTurn = true;
-					} else {
-						this.isLoggedInUsersTurn = false;
-					}
-				}
-			}
+				this.isLoggedInUsersTurn = false;
+			}		
+			
 		} catch (Exception e) {
 			AppLog.getLogger().severe("There was an exception in GameBean.init(): " + e.getMessage());
 		}

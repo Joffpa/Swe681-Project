@@ -14,9 +14,8 @@ public class AuthenticationService {
 		//5 if they match, set this user as the authenticated user and return the user object (user object will be stored in session
 		//6 if they dont match, return null		
 		
-		UserProfile user = new UserProfile();
-		user.loginname = loginName;
-		user.currentGameId = 1;
+		DataDriver data = new DataDriver();				
+		UserProfile user = data.getPlayerByLoginname(loginName);
 		return user;
 	}
 	
