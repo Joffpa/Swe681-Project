@@ -43,9 +43,10 @@ create table GameState(
     OwnedBy nvarchar2(100),
     PRIMARY KEY(GameId, BoardRow, BoardCol),
     CONSTRAINT GameIdFk FOREIGN KEY (GameId) REFERENCES GameInstance(GameId),    
-    CONSTRAINT OwnerFk FOREIGN KEY (OwnedBy) REFERENCES UserProfile(Username),
+    --CONSTRAINT OwnerFk FOREIGN KEY (OwnedBy) REFERENCES UserProfile(Username),
     constraint RowCheck  check(BoardRow in('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I')),
-    constraint ColCheck  check(BoardCol in('1', '2', '3', '4', '5', '6', '7', '8', '9'))
+    constraint ColCheck  check(BoardCol in('1', '2', '3', '4', '5', '6', '7', '8', '9')),
+    constraint ownerCheck  check(OwnedBy in('black', 'white'))
 );
 
 create table GameLog(    
@@ -102,11 +103,11 @@ insert into UserProfile(
                 CurrentGameId ,
                 Wins,
                 Losses)
-SELECT 'User1', 'User1', '123', '123', null, 0, 0 from dual
+SELECT 'User1', 'User1', '123', '123', null, 6, 7 from dual
 union all
-SELECT 'User2', 'User2', '123', '123', null, 0, 0 from dual
+SELECT 'User2', 'User2', '123', '123', null, 5, 3 from dual
 union all
-SELECT 'User3', 'User3', '123', '123', null, 0, 0 from dual;
+SELECT 'User3', 'User3', '123', '123', null, 2, 9 from dual;
 
 insert into GameInstance(
     Player1,
@@ -133,11 +134,12 @@ insert into GameState(
     BoardCol ,
     OwnedBy 
 )
-select MAX(GameId), 
-    'A',
-    '1',
-    'User1'
-from GameInstance;
+select 1, 'A','1', 'black' from dual
+union all
+select 1, 'B','2', 'white' from dual
+union all
+select 1, 'C','3', 'white' from dual
+;
 
 
 
@@ -148,7 +150,7 @@ insert into GameLog(
     Player ,
     MovePlayed 
 )
-select MAX(GameId),
+select max(GameId),
 'User1',
 'A1'
 from GameInstance;
@@ -160,12 +162,13 @@ insert into GameLog(
     MovePlayed ,
     DatePlayed
 )
-select MAX(GameId),
+select max(GameId),
 'User3',
 'B2',
-SYSDATE + (1/1440*5)
+SYSDATE + (1/1440*10)
 from GameInstance;
 
+commit;
 --select * from UserProfile;
 --select * from GameInstance;
 --select * from GameState;

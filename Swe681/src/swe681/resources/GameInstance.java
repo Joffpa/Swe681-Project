@@ -11,6 +11,12 @@ public class GameInstance {
 	public int player1FinalScore;
 	public int player2FinalScore;	
 	
+	public String[][] gameState;
+	
+	public String[][] getGameState(){
+		return this.gameState;
+	}
+	
 	public double getGameId() {
 		return this.gameId;
 	}

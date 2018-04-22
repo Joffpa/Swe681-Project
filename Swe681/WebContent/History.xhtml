@@ -8,43 +8,46 @@
 	<title></title>
 </h:head>
 <h:body>
-		<h:form prependId="false">
-	<label>Games Played:</label>
-	<h:dataTable var="gameIns" value="#{historyBean.allPastGames}"
-		border="1">
-		<h:column>
-			<f:facet name="header">Player 1</f:facet>
+	<h:form prependId="false">
+		<label>Games Played:</label>
+		<h:dataTable var="gameIns" value="#{historyBean.allPastGames}"
+			border="1">
+			<h:column>
+				<f:facet name="header">Player 1</f:facet>
 			#{gameIns.player1}
 		</h:column>
-		<h:column>
-			<f:facet name="header">Player 2</f:facet>
+			<h:column>
+				<f:facet name="header">Player 2</f:facet>
 			#{gameIns.player2}
 		</h:column>
-		<h:column>
-			<f:facet name="header">History</f:facet>
-			<h:commandButton value="See History" title="History"
-				action="#{historyBean.seeHistory}"></h:commandButton>
-		</h:column>
-	</h:dataTable>
-	<br/>
-	<br/>
-	<br/>
-	<label>Game History:</label>
-	<h:dataTable var="gameLog" value="#{historyBean.gameLogForInstance}"
-		border="1">
-		<h:column>
-			<f:facet name="header">Player</f:facet>
+			<h:column>
+				<f:facet name="header">History</f:facet>
+				<h:commandButton value="See History" title="History"
+					action="#{historyBean.seeHistory}"></h:commandButton>
+			</h:column>
+		</h:dataTable>
+		<br />
+		<br />
+		<br />
+		<label>Game History:</label>
+		<h:dataTable var="gameLog" value="#{historyBean.gameLogForInstance}"
+			border="1">
+			<h:column>
+				<f:facet name="header">Player</f:facet>
 			#{gameLog.player}
 		</h:column>
-		<h:column>
-			<f:facet name="header">Move</f:facet>
+			<h:column>
+				<f:facet name="header">Move</f:facet>
 			#{gameLog.movePlayed}
 		</h:column>
-		<h:column>
-			<f:facet name="header">Date</f:facet>
+			<h:column>
+				<f:facet name="header">Date</f:facet>
 			#{gameLog.datePlayed}
 		</h:column>
-	</h:dataTable>
-</h:form>
+		</h:dataTable>
+		<br />
+		<br />
+		<h:button value="Return" outcome="LandingPage"></h:button>
+	</h:form>
 </h:body>
 </html>

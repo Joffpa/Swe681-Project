@@ -16,6 +16,7 @@ public class AuthenticationService {
 		
 		UserProfile user = new UserProfile();
 		user.loginname = "User1";
+		user.currentGameId = 1;
 		return user;
 	}
 	
