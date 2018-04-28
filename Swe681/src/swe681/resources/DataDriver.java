@@ -9,129 +9,421 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 import javax.swing.table.DefaultTableModel;
 
 public class DataDriver {
-	static final String JDBC_DRIVER = "oracle.jdbc.driver.OracleDriver";
-	static final String DB_URL = "jdbc:oracle:thin:@apollo.vse.gmu.edu:1521:ite10g";
-	static final String DB_USER = "jpannee";
-	static final String DB_PASS = "ystone";
 
 	private Connection conn = null;
+	private PreparedStatement pStmt;
 
 	public DataDriver() {
 		try {
-
-			Class.forName(JDBC_DRIVER);
-			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+			Context initContext = new InitialContext();
+			Context envContext = (Context) initContext.lookup("java:/comp/env");
+			DataSource ds = (DataSource) envContext.lookup("jdbc/Swe681");
+			conn = ds.getConnection();
 		} catch (Exception ex) {
 			System.out.println("exception: " + ex.getMessage());
 			ex.printStackTrace();
 		}
 	}
+
+	private void closePrepSatement() {
+		try {
+			if (!pStmt.isClosed())
+				pStmt.close();
+		} catch (Exception e) {
+			AppLog.getLogger().severe("There was an exception running DataDriver.closePrepSatement: " + e.getMessage());
+		}
+	}
+
+	private void closeRS(ResultSet rs) {
+		try {
+			if (!rs.isClosed()) {
+				rs.close();
+			}
+		} catch (Exception e) {
+			AppLog.getLogger().severe("There was an exception running DataDriver.closeRS: " + e.getMessage());
+		}
+	}
+
+	public boolean setPasswordAttempts(String loginname, int attempts) {
+		try {
+			pStmt = conn.prepareStatement("UPDATE UserProfile SET PasswordAttempts = ? WHERE Loginname = ?");
+			pStmt.setInt(1, attempts);
+			pStmt.setString(2, loginname);
+			pStmt.execute();
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.setPasswordAttempts: " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
 	
+	public boolean setPasswordLockout(String loginname, Timestamp time) {
+		try {
+			pStmt = conn.prepareStatement("UPDATE UserProfile SET PasswordLockout = ? WHERE Loginname = ?");
+			pStmt.setTimestamp(1, time);
+			pStmt.setString(2, loginname);
+			pStmt.execute();
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.setPasswordAttempts: " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
+	
+
+	public boolean updateWinnerAndLooser(String winner, String looser) {
+		try {
+			pStmt = conn.prepareStatement("UPDATE UserProfile SET Wins = Wins+1  WHERE Loginname = ?");
+			pStmt.setString(1, winner);
+			pStmt.execute();
+			closePrepSatement();
+			pStmt = conn.prepareStatement("UPDATE UserProfile SET Losses = Losses+1  WHERE Loginname = ?");
+			pStmt.setString(1, looser);
+			pStmt.execute();
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.clearCurrentGameForUser: " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
+
+	public boolean clearCurrentGameForUser(String loginname) {
+		try {
+			pStmt = conn.prepareStatement("UPDATE UserProfile SET CurrentGameId = null WHERE Loginname = ?");
+			pStmt.setString(1, loginname);
+			pStmt.execute();
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.clearCurrentGameForUser: " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
+
+	public boolean updateGameData(GameInstance gameinstance, String player, String move) {
+		boolean gameInstanceUpdated = updateGameInstance(gameinstance);
+		boolean gameStateUpdated = updateGameState(gameinstance.gameId, gameinstance.gameState);
+		boolean logSuccess = logGameMove(gameinstance.gameId, player, move);
+		closePrepSatement();
+		return gameInstanceUpdated && gameStateUpdated && logSuccess;
+	}
+
+	private boolean updateGameInstance(GameInstance gameinstance) {
+		try {
+			pStmt = conn.prepareStatement(
+					"UPDATE GameInstance SET Player1 = ?, Player2 = ?, CurrentState = ?, CurrentPlayerTurn = ? , NumPasses = ?, Player1Prisoners = ?, Player2Prisoners = ?, Player1FinalScore = ?, Player2FinalScore = ?, Info = ?, TimeSinceLastMove = ? WHERE GameId = ?");
+			pStmt.setString(1, gameinstance.player1);
+			pStmt.setString(2, gameinstance.player2);
+			pStmt.setString(3, gameinstance.currentState);
+			pStmt.setString(4, gameinstance.currentPlayerTurn);
+			pStmt.setInt(5, gameinstance.numPasses);
+			pStmt.setInt(6, gameinstance.player1Prisoners);
+			pStmt.setInt(7, gameinstance.player2Prisoners);
+			pStmt.setInt(8, gameinstance.player1FinalScore);
+			pStmt.setInt(9, gameinstance.player2FinalScore);
+			pStmt.setString(10, gameinstance.info);
+			java.util.Date date = new java.util.Date();
+			pStmt.setLong(11, date.getTime());
+			pStmt.setInt(12, gameinstance.gameId);
+			pStmt.execute();
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.updateGameInstance: " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
+
+	private boolean updateGameState(int gameId, String[][] gamestate) {
+		try {
+
+			for (int r = 0; r < gamestate.length; r++) {
+				for (int col = 0; col < gamestate[r].length; col++) {
+					String row = null;
+					switch (r) {
+					case 0:
+						row = "A";
+						break;
+					case 1:
+						row = "B";
+						break;
+					case 2:
+						row = "C";
+						break;
+					case 3:
+						row = "D";
+						break;
+					case 4:
+						row = "E";
+						break;
+					case 5:
+						row = "F";
+						break;
+					case 6:
+						row = "G";
+						break;
+					case 7:
+						row = "H";
+						break;
+					case 8:
+						row = "I";
+						break;
+					default:
+						continue;
+					}
+					String player = gamestate[r][col];
+					if (player == null)
+						player = "";
+					pStmt = conn.prepareStatement(
+							"begin insert into GameState (GameId, BoardRow, BoardCol, OwnedBy) values (?, ?, ?, ?);	"
+									+ "exception when dup_val_on_index then update GameState set OwnedBy = ? where GameId = ? AND BoardRow = ? AND BoardCol = ?;"
+									+ "end;");
+					pStmt.setInt(1, gameId);
+					pStmt.setString(2, row);
+					pStmt.setInt(3, col);
+					pStmt.setString(4, player);
+
+					pStmt.setString(5, player);
+					pStmt.setInt(6, gameId);
+					pStmt.setString(7, row);
+					pStmt.setInt(8, col);
+					pStmt.execute();
+				}
+			}
+
+		} catch (Exception e) {
+			AppLog.getLogger().severe("There was an exception running DataDriver.updateGameState: " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
+
+	public boolean logGameMove(int gameId, String player, String move) {
+		int rowsUpdated = 0;
+		try {
+			pStmt = conn.prepareStatement(
+					"INSERT INTO GameLog(GameId, Player, MovePlayed, DatePlayed) SELECT ?, ?, ?, ? from dual");
+			pStmt.setInt(1, gameId);
+			pStmt.setString(2, player);
+			pStmt.setString(3, move);
+			pStmt.setString(4,
+					new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Timestamp(System.currentTimeMillis())));
+			rowsUpdated = pStmt.executeUpdate();
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger().severe("There was an exception running DataDriver.logGameMove: " + e.getMessage());
+		}
+
+		return true;
+	}
+
 	public boolean userJoinGame(double gameId, String loginnamePlayer2) {
 		try {
 			conn.setAutoCommit(false);
-			PreparedStatement pStmt = conn.prepareStatement("if exists (select Loginname from UserProfile where Loginname = ? AND CurrentGameId = 0) update UserProfile set CurrentGameId = ? where Loginname = ?; ");
-			pStmt.setString(1, loginnamePlayer2);
-			pStmt.setDouble(2, gameId);		
+			pStmt = conn.prepareStatement(
+					"update UserProfile set CurrentGameId = ? where Loginname = ? and exists (select Loginname from UserProfile where Loginname = ? AND (CurrentGameId = 0 OR CurrentGameId IS NULL))");
+			pStmt.setDouble(1, gameId);
+			pStmt.setString(2, loginnamePlayer2);
 			pStmt.setString(3, loginnamePlayer2);
 			pStmt.execute();
 
-			PreparedStatement pStmt2 = conn.prepareStatement("if exists (select Player1 from GameInstance where GameId = ? AND Player2 is null) update GameInstance set Player2 = ? where GameId = ?; ");
-			pStmt2.setDouble(1, gameId);
-			pStmt2.setString(2, loginnamePlayer2);
-			pStmt2.setDouble(3, gameId);	
-			pStmt2.execute();
+			pStmt = conn.prepareStatement(
+					"update GameInstance set Player2 = ?, TimeSinceLastMove = ? where GameId = ? and exists (select Player1 from GameInstance where GameId = ? AND Player2 is null) ");
+			pStmt.setString(1, loginnamePlayer2);
+			java.util.Date date = new java.util.Date();
+			pStmt.setLong(2, date.getTime());
+			pStmt.setDouble(3, gameId);
+			pStmt.setDouble(4, gameId);
+			pStmt.execute();
 			conn.commit();
-			conn.setAutoCommit(true);			
+			conn.setAutoCommit(true);
+			closePrepSatement();
 		} catch (Exception e) {
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {
-				AppLog.getLogger().severe("There was an exception running DataDriver.userJoinGame when trying to rollback transaction: " + e1.getMessage());
+				AppLog.getLogger().severe(
+						"There was an exception running DataDriver.userJoinGame when trying to rollback transaction: "
+								+ e1.getMessage());
 				return false;
 			}
 			AppLog.getLogger().severe("There was an exception running DataDriver.userJoinGame: " + e.getMessage());
 			return false;
 		}
-		return true;		
+		return true;
 	}
-	
 
 	public GameInstance getGameInstanceDetails(int gameId) {
 		ResultSet rsInstance = getGameInstanceRS(gameId);
-		GameInstance game = mapResultSetToGameInstance(rsInstance).get(0);
-		ResultSet rsState = getGameStateRS(gameId);
-		game.gameState = mapResultSetToStringArray(rsState);
-
-		return game;
+		ArrayList<GameInstance> games = mapResultSetToGameInstance(rsInstance);
+		closeRS(rsInstance);
+		closePrepSatement();
+		if (games != null && !games.isEmpty()) {
+			GameInstance game = games.get(0);
+			ResultSet rsState = getGameStateRS(gameId);
+			game.gameState = mapResultSetToStringArray(rsState);
+			closeRS(rsState);
+			closePrepSatement();
+			return game;
+		}
+		return null;
 	}
 
 	public ArrayList<UserProfile> getAllPlayers() {
 		ResultSet rs = this.getAllPlayersRS();
-		return this.mapResultSetToUserProfiles(rs);
+		ArrayList<UserProfile> players = this.mapResultSetToUserProfiles(rs);
+		closeRS(rs);
+		closePrepSatement();
+		return players;
 
 	}
 
 	private ResultSet getAllPlayersRS() {
 		ResultSet rs = null;
 		try {
-			PreparedStatement pStmt = conn.prepareStatement("select   Username," + "  Loginname," + "  PasswordHash,"
-					+ "  HashSalt," + "  CurrentGameId," + "  Wins," + "  Losses  from UserProfile");
+			pStmt = conn.prepareStatement(
+					"select Username, Loginname, PasswordHash, HashSalt, CurrentGameId, Wins, Losses, PasswordAttempts, PasswordLockout  from UserProfile");
 			rs = pStmt.executeQuery();
 		} catch (Exception e) {
 			AppLog.getLogger().severe("There was an exception running DataDriver.getAllPlayersRS: " + e.getMessage());
 		}
 		return rs;
 	}
-	
-	public UserProfile getPlayerByLoginname(String loginname){
+
+	public UserProfile getPlayerByLoginname(String loginname) {
 		ResultSet rs = getPlayerByLoginnameRS(loginname);
-		return this.mapResultSetToUserProfiles(rs).get(0);
+		if (rs == null) {
+			return null;
+		}
+		ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
+		if (users != null && !users.isEmpty()) {
+			return users.get(0);
+		}
+		closeRS(rs);
+		closePrepSatement();
+		return null;
 	}
-	
-	private ResultSet getPlayerByLoginnameRS(String loginname){
+
+	public boolean usernameOrLoginnameAvailable(String username, String loginname) {
+		ResultSet rs = getPlayerByUsernameOrLoginnameRS(username, loginname);
+		if (rs == null) {
+			return false; // error occurred in check, assume username is taken
+		}
+		ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
+		if (users == null || users.isEmpty()) {
+			return true;
+		}
+		closeRS(rs);
+		closePrepSatement();
+		return false;
+	}
+
+	public UserProfile createUserProfile(String username, String loginname, byte[] pass, byte[] salt) {
+		boolean userCreated = insertUserProfile(username, loginname, pass, salt);
+		if (!userCreated) {
+			return null;
+		}
+		ResultSet rs = getPlayerByLoginnameRS(loginname);
+		if (rs == null) {
+			return null;
+		}
+		ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
+		if (users != null && !users.isEmpty()) {
+			return users.get(0);
+		}
+		closeRS(rs);
+		closePrepSatement();
+		return null;
+	}
+
+	private boolean insertUserProfile(String username, String loginname, byte[] pass, byte[] salt) {
+		int rowsUpdated = 0;
+		try {
+			pStmt = conn.prepareStatement(
+					"INSERT INTO UserProfile(Username, Loginname, PasswordHash, Hashsalt, CurrentGameId, Wins, Losses, PasswordAttempts, PasswordLockout) SELECT ?, ?, ?, ?, null, 0, 0, 0, null FROM dual WHERE NOT EXISTS (SELECT * FROM UserProfile Where Username = ? OR Loginname = ?)");
+			pStmt.setString(1, username);
+			pStmt.setString(2, loginname);
+			pStmt.setBytes(3, pass);
+			pStmt.setBytes(4, salt);
+			pStmt.setString(5, username);
+			pStmt.setString(6, loginname);
+			rowsUpdated = pStmt.executeUpdate();
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.getPlayerByLoginnameRS: " + e.getMessage());
+		}
+		return rowsUpdated > 0;
+	}
+
+	private ResultSet getPlayerByLoginnameRS(String loginname) {
 		ResultSet rs = null;
 		try {
-			PreparedStatement pStmt = conn.prepareStatement("select Username," + "  Loginname," + "  PasswordHash,"
-					+ "  HashSalt," + "  CurrentGameId," + "  Wins," + "  Losses  from UserProfile where Loginname = ?");
+			pStmt = conn.prepareStatement(
+					"select Username, Loginname, PasswordHash, HashSalt, CurrentGameId, Wins, Losses, PasswordAttempts, PasswordLockout from UserProfile where Loginname = ?");
 			pStmt.setString(1, loginname);
 			rs = pStmt.executeQuery();
-			rs.last(); 
-			int total = rs.getRow();
-			if(total > 1) {
-				throw new Exception("There are more than one user in the database with the loginname " + loginname);
-			}else {
-				//reset back to first
-				rs.beforeFirst();
-			}
 		} catch (Exception e) {
-			AppLog.getLogger().severe("There was an exception running DataDriver.getAllPlayersRS: " + e.getMessage());
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.getPlayerByLoginnameRS: " + e.getMessage());
 		}
 		return rs;
 	}
-		
- 
+
+	private ResultSet getPlayerByUsernameOrLoginnameRS(String username, String loginname) {
+		ResultSet rs = null;
+		try {
+			pStmt = conn.prepareStatement(
+					"select Username, Loginname, PasswordHash, HashSalt, CurrentGameId, Wins, Losses, PasswordAttempts, PasswordLockout  from UserProfile where Loginname = ? OR Username = ? ");
+			pStmt.setString(1, loginname);
+			pStmt.setString(2, username);
+			rs = pStmt.executeQuery();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.getPlayerByLoginnameRS: " + e.getMessage());
+		}
+		return rs;
+	}
+
 	private ArrayList<UserProfile> mapResultSetToUserProfiles(ResultSet rs) {
 		ArrayList ll = new ArrayList<UserProfile>();
+		if (rs == null) {
+			return ll;
+		}
 		try {
 
 			// Fetch each row from the result set
 			while (rs.next()) {
 				String Username = rs.getString("Username");
 				String Loginname = rs.getString("Loginname");
-				String PasswordHash = rs.getString("PasswordHash");
-				String HashSalt = rs.getString("HashSalt");
+				byte[] PasswordHash = rs.getBytes("PasswordHash");
+				byte[] HashSalt = rs.getBytes("HashSalt");
 				int CurrentGameId = rs.getInt("CurrentGameId");
 				int Wins = rs.getInt("Wins");
 				int Losses = rs.getInt("Losses");
+				int attempts = rs.getInt("PasswordAttempts");
+				Timestamp lockout = rs.getTimestamp("PasswordLockout");
 
 				UserProfile user = new UserProfile();
 				user.username = Username;
@@ -141,6 +433,8 @@ public class DataDriver {
 				user.currentGameId = CurrentGameId;
 				user.wins = Wins;
 				user.losses = Losses;
+				user.passwordAttempts = attempts;
+				user.passwordLockout = lockout;
 
 				ll.add(user);
 			}
@@ -150,16 +444,72 @@ public class DataDriver {
 		return ll;
 	}
 
-	private ResultSet getGameInstanceJoinableRS() {
+	public ArrayList<GameInstance> getGameHistoryForPlayer(String playerLoginName) {
+		ResultSet rs = getGameHistoryRS(playerLoginName);
+		ArrayList<GameInstance> gs = mapResultSetToGameInstance(rs);
+		closeRS(rs);
+		closePrepSatement();
+		return gs;
+	}
+
+	public ArrayList<GameInstance> getGameInstanceJoinable(String loginname) {
+		ResultSet rs = getGameInstanceJoinableRS(loginname);
+		ArrayList<GameInstance> gs = mapResultSetToGameInstance(rs);
+		closeRS(rs);
+		closePrepSatement();
+		return gs;
+	}
+
+	public GameInstance getGameInProgressForUser(String loginname) {
+		ResultSet rs = getGameInProgressForUserRS(loginname);
+		ArrayList<GameInstance> games = mapResultSetToGameInstance(rs);
+		if (games != null && !games.isEmpty()) {
+			return games.get(0);
+		}
+		closeRS(rs);
+		closePrepSatement();
+		return null;
+	}
+
+	public boolean startNewGame(String loginname) {
+		boolean gameCreated = false;
+		try {
+			conn.setAutoCommit(false);
+			pStmt = conn.prepareStatement(
+					"INSERT INTO GameInstance(Player1, CurrentPlayerTurn, CurrentState) SELECT ?, ?, 'inprogress' from dual where not exists (select GameId from GameInstance where (Player1 = ? OR Player2 = ?) AND CurrentState = 'inprogress') ");
+			pStmt.setString(1, loginname);
+			pStmt.setString(2, loginname);
+			pStmt.setString(3, loginname);
+			pStmt.setString(4, loginname);
+			pStmt.execute();
+			closePrepSatement();
+
+			pStmt = conn.prepareStatement(
+					"Update UserProfile SET CurrentGameId = (Select GameId from GameInstance where Player1 = ? AND CurrentState = 'inprogress' and rownum = 1) WHERE Loginname = ?");
+			pStmt.setString(1, loginname);
+			pStmt.setString(2, loginname);
+			pStmt.execute();
+			conn.commit();
+			conn.setAutoCommit(true);
+			closePrepSatement();
+			gameCreated = true;
+		} catch (Exception e) {
+			AppLog.getLogger().severe("There was an exception running DataDriver.startNewGame: " + e.getMessage());
+		}
+		return gameCreated;
+	}
+
+	private ResultSet getGameInstanceJoinableRS(String loginname) {
 		ResultSet rs = null;
 		try {
-			PreparedStatement pStmt = conn.prepareStatement(
-					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn, Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore "
-							+ " from GameInstance " + " where Player2 is null and CurrentState = 'inprogress'");
+			pStmt = conn.prepareStatement(
+					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn, NumPasses,  Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore, Info, TimeSinceLastMove  "
+							+ " from GameInstance  where Player1 <> ? AND Player2 is null and CurrentState = 'inprogress'");
+			pStmt.setString(1, loginname);
 			rs = pStmt.executeQuery();
 		} catch (Exception e) {
 			AppLog.getLogger()
-					.severe("There was an exception running DataDriver.getGameInstanceJoinable: " + e.getMessage());
+					.severe("There was an exception running DataDriver.getGameInstanceJoinableRS: " + e.getMessage());
 		}
 		return rs;
 	}
@@ -167,8 +517,8 @@ public class DataDriver {
 	private ResultSet getGameInstanceRS(int gameId) {
 		ResultSet rs = null;
 		try {
-			PreparedStatement pStmt = conn.prepareStatement(
-					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn, Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore, Info "
+			pStmt = conn.prepareStatement(
+					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn,NumPasses, Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore, Info, TimeSinceLastMove "
 							+ " from GameInstance where GameId = ? ");
 			pStmt.setInt(1, gameId);
 			rs = pStmt.executeQuery();
@@ -178,10 +528,26 @@ public class DataDriver {
 		return rs;
 	}
 
+	private ResultSet getGameInProgressForUserRS(String loginname) {
+		ResultSet rs = null;
+		try {
+			pStmt = conn.prepareStatement(
+					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn,NumPasses, Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore, Info, TimeSinceLastMove "
+							+ " from GameInstance where (Player1 = ? OR Player2 = ?) AND CurrentState = 'inprogress'");
+			pStmt.setString(1, loginname);
+			pStmt.setString(2, loginname);
+			rs = pStmt.executeQuery();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.getGameInProgressForUserRS: " + e.getMessage());
+		}
+		return rs;
+	}
+
 	private ResultSet getGameStateRS(int gameId) {
 		ResultSet rs = null;
 		try {
-			PreparedStatement pStmt = conn.prepareStatement(
+			pStmt = conn.prepareStatement(
 					"select GameId, BoardRow, BoardCol, OwnedBy " + " from GameState " + " where GameId = ? ");
 			pStmt.setInt(1, gameId);
 			rs = pStmt.executeQuery();
@@ -191,16 +557,11 @@ public class DataDriver {
 		return rs;
 	}
 
-	public ArrayList<GameInstance> getGameInstanceJoinable() {
-		ResultSet rs = getGameInstanceJoinableRS();
-		return mapResultSetToGameInstance(rs);
-	}
-
 	private ResultSet getGameHistoryRS(String playerLoginName) {
 		ResultSet rs = null;
 		try {
-			PreparedStatement pStmt = conn.prepareStatement(
-					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn, Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore "
+			pStmt = conn.prepareStatement(
+					"select GameId, Player1, Player2, CurrentState, CurrentPlayerTurn,NumPasses, Player1Prisoners, Player2Prisoners, Player1FinalScore, Player2FinalScore, Info, TimeSinceLastMove "
 							+ " from GameInstance " + " where (Player2 = ? or Player1 = ?) and CurrentState = 'done'");
 			pStmt.setString(1, playerLoginName);
 			pStmt.setString(2, playerLoginName);
@@ -211,13 +572,11 @@ public class DataDriver {
 		return rs;
 	}
 
-	public ArrayList<GameInstance> getGameHistoryForPlayer(String playerLoginName) {
-		ResultSet rs = getGameHistoryRS(playerLoginName);
-		return mapResultSetToGameInstance(rs);
-	}
-
 	private ArrayList<GameInstance> mapResultSetToGameInstance(ResultSet rs) {
 		ArrayList ll = new ArrayList<GameInstance>();
+		if (rs == null) {
+			return ll;
+		}
 		try {
 
 			// Fetch each row from the result set
@@ -227,10 +586,13 @@ public class DataDriver {
 				String player2 = rs.getString("Player2");
 				String currentState = rs.getString("CurrentState");
 				String currentPlayerTurn = rs.getString("CurrentPlayerTurn");
+				int numPasses = rs.getInt("NumPasses");
 				int player1Prisoners = rs.getInt("Player1Prisoners");
 				int player2Prisoners = rs.getInt("Player2Prisoners");
 				int player1FinalScore = rs.getInt("Player1FinalScore");
 				int player2FinalScore = rs.getInt("Player2FinalScore");
+				String info = rs.getString("Info");
+				long timeSinceLastMove = rs.getLong("TimeSinceLastMove");
 
 				GameInstance game = new GameInstance();
 				game.gameId = gameId;
@@ -238,10 +600,12 @@ public class DataDriver {
 				game.player2 = player2;
 				game.currentState = currentState;
 				game.currentPlayerTurn = currentPlayerTurn;
+				game.numPasses = numPasses;
 				game.player1Prisoners = player1Prisoners;
 				game.player2Prisoners = player2Prisoners;
 				game.player1FinalScore = player1FinalScore;
 				game.player2FinalScore = player2FinalScore;
+				game.info = info;
 
 				ll.add(game);
 			}
@@ -256,8 +620,10 @@ public class DataDriver {
 		try {
 			while (rs.next()) {
 				String row = rs.getString("BoardRow");
-				int col = Integer.parseInt(rs.getString("BoardCol"));
+				int col = rs.getInt("BoardCol");
 				String player = rs.getString("OwnedBy");
+				if (player == null)
+					player = "";
 				if (row.equals("A")) {
 					stringArray[0][col] = player;
 				} else if (row.equals("B")) {
@@ -287,14 +653,17 @@ public class DataDriver {
 
 	public ArrayList<GameLog> getGameLogForInstance(double gameId) {
 		ResultSet rs = getGameLogForInstanceResultSet(gameId);
-		return mapResultSetToGameLog(rs);
+		ArrayList<GameLog> logs = mapResultSetToGameLog(rs);
+		closeRS(rs);
+		closePrepSatement();
+		return logs;
 	}
 
 	private ResultSet getGameLogForInstanceResultSet(double gameId) {
 		ResultSet rs = null;
 		try {
-			PreparedStatement pStmt = conn.prepareStatement(
-					"select GameId, Player, MovePlayed, DatePlayed " + " from GameLog " + " where GameId = ? ");
+			pStmt = conn.prepareStatement("select GameId, Player, MovePlayed, DatePlayed " + " from GameLog "
+					+ " where GameId = ? order by DatePlayed desc");
 			pStmt.setDouble(1, gameId);
 			rs = pStmt.executeQuery();
 		} catch (Exception e) {
@@ -313,7 +682,7 @@ public class DataDriver {
 				int gameId = rs.getInt("GameId");
 				String player = rs.getString("Player");
 				String move = rs.getString("MovePlayed");
-				Timestamp time = rs.getTimestamp("DatePlayed");
+				String time = rs.getString("DatePlayed");
 
 				GameLog log = new GameLog();
 				log.gameId = gameId;
@@ -327,7 +696,5 @@ public class DataDriver {
 		}
 		return ll;
 	}
-	
 
-	
 }

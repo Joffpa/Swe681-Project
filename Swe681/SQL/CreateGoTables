@@ -9,25 +9,28 @@ DROP TABLE UserProfile;
 create table UserProfile(
   Username nvarchar2(100) primary key,
   Loginname nvarchar2(100) NOT NULL,
-  PasswordHash nvarchar2(1000),
-  HashSalt nvarchar2(1000),
-  CurrentGameId int default 0 null,
+  PasswordHash RAW(1000),
+  HashSalt RAW(1000),
+  CurrentGameId int null,
   Wins int,
-  Losses int
+  Losses int,
+  PasswordAttempts int,
+  PasswordLockout timestamp
 );
-  
-  
+
 create table GameInstance(
   GameId NUMBER Primary Key,
   Player1 nvarchar2(100) not null,
   Player2 nvarchar2(100) null,
   CurrentState nvarchar2(100) default 'inprogress' not NULL,
   CurrentPlayerTurn nvarchar2(100) not NULL,
+  NumPasses INT DEFAULT 0 NOT NULL,
   Player1Prisoners Int DEFAULT 0 not NULL,
   Player2Prisoners Int DEFAULT 0 not NULL,
   Player1FinalScore INT DEFAULT 0 not NULL,
   Player2FinalScore INT DEFAULT 0 not NULL,
   Info nvarchar2(100) null,
+  TimeSinceLastMove long null,
   CONSTRAINT Player1Fk FOREIGN KEY (Player1) REFERENCES UserProfile(Username),
   CONSTRAINT Player2Fk FOREIGN KEY (Player2) REFERENCES UserProfile(Username),
   CONSTRAINT CurrentPlayerTurnFk FOREIGN KEY (CurrentPlayerTurn) REFERENCES UserProfile(Username),
@@ -40,13 +43,13 @@ ADD CONSTRAINT  CurrentGameIdFk FOREIGN KEY (CurrentGameId) REFERENCES GameInsta
 create table GameState(
     GameId number, 
     BoardRow nvarchar2(1),
-    BoardCol nvarchar2(1),
+    BoardCol int,
     OwnedBy nvarchar2(100),
     PRIMARY KEY(GameId, BoardRow, BoardCol),
     CONSTRAINT GameIdFk FOREIGN KEY (GameId) REFERENCES GameInstance(GameId),    
     --CONSTRAINT OwnerFk FOREIGN KEY (OwnedBy) REFERENCES UserProfile(Username),
     constraint RowCheck  check(BoardRow in('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I')),
-    constraint ColCheck  check(BoardCol in('1', '2', '3', '4', '5', '6', '7', '8', '9')),
+    constraint ColCheck  check(BoardCol in(0, 1, 2, 3, 4, 5, 6, 7, 8)),
     constraint ownerCheck  check(OwnedBy in('black', 'white'))
 );
 
@@ -54,7 +57,7 @@ create table GameLog(
     GameId number, 
     Player nvarchar2(100) NOT NULL,
     MovePlayed nvarchar2(100) NOT NULL,
-    DatePlayed TIMESTAMP DEFAULT SYSDATE NOT NULL, 
+    DatePlayed nvarchar2(100) NOT NULL, 
     PRIMARY KEY(GameId, DatePlayed), --ensure no two moves can be made at same time
     CONSTRAINT PlayerFk FOREIGN KEY (Player) REFERENCES UserProfile(Username)
 );
@@ -95,87 +98,89 @@ END;
 --    END IF;
 --END;
 --/
-
-insert into UserProfile(  
-                Username ,
-                Loginname ,
-                PasswordHash ,
-                HashSalt ,
-                CurrentGameId ,
-                Wins,
-                Losses)
-SELECT 'User1', 'User1', '123', '123', null, 6, 7 from dual
-union all
-SELECT 'User2', 'User2', '123', '123', null, 5, 3 from dual
-union all
-SELECT 'User3', 'User3', '123', '123', null, 2, 9 from dual;
-
-insert into GameInstance(
-    Player1,
-    Player2,
-    CurrentPlayerTurn,
-    CurrentState,
-    Player1Prisoners,
-    Player2Prisoners,
-    Player1FinalScore,
-    Player2FinalScore
-)
-select 'User1', 'User2', 'User1', 'inprogress', 0, 0, 0, 0 from dual
-union all
-select 'User1', 'User3', 'User3', 'done', 4, 5, 16, 18 from dual
-union all
-select 'User3', null, 'User3', 'inprogress', 0, 0, 0, 0  from dual
-;
-
-insert into GameState(
-    GameId , 
-    BoardRow ,
-    BoardCol ,
-    OwnedBy 
-)
-select 1, 'A','1', 'black' from dual
-union all
-select 1, 'B','2', 'white' from dual
-union all
-select 1, 'C','3', 'white' from dual
-;
-
-
-
-
-
-insert into GameLog(
-    GameId , 
-    Player ,
-    MovePlayed 
-)
-select max(GameId),
-'User1',
-'A1'
-from GameInstance;
-
-
-insert into GameLog(
-    GameId , 
-    Player ,
-    MovePlayed ,
-    DatePlayed
-)
-select max(GameId),
-'User3',
-'B2',
-SYSDATE + (1/1440*10)
-from GameInstance;
-
-update UserProfile
-set CurrentGameId = 1
-where loginname = 'User1';
-update UserProfile
-set CurrentGameId = 1
-where loginname = 'User2';
-update UserProfile
-set CurrentGameId = 3
-where loginname = 'User3';
+--
+--insert into UserProfile(  
+--                Username ,
+--                Loginname ,
+--                PasswordHash ,
+--                HashSalt ,
+--                CurrentGameId ,
+--                Wins,
+--                Losses)
+--SELECT 'User1', 'User1', '123', '123', null, 6, 7 from dual
+--union all
+--SELECT 'User2', 'User2', '123', '123', null, 5, 3 from dual
+--union all
+--SELECT 'User3', 'User3', '123', '123', null, 2, 9 from dual
+--union all
+--SELECT 'User4', 'User4', '123', '123', null, 5, 3 from dual;
+--
+--insert into GameInstance(
+--    Player1,
+--    Player2,
+--    CurrentPlayerTurn,
+--    CurrentState,
+--    Player1Prisoners,
+--    Player2Prisoners,
+--    Player1FinalScore,
+--    Player2FinalScore
+--)
+--select 'User1', 'User2', 'User1', 'inprogress', 0, 0, 0, 0 from dual
+--union all
+--select 'User1', 'User3', 'User3', 'done', 4, 5, 16, 18 from dual
+--union all
+--select 'User3', null, 'User3', 'inprogress', 0, 0, 0, 0  from dual
+--;
+--
+--insert into GameState(
+--    GameId , 
+--    BoardRow ,
+--    BoardCol ,
+--    OwnedBy 
+--)
+--select 1, 'A','1', 'black' from dual
+--union all
+--select 1, 'B','2', 'white' from dual
+--union all
+--select 1, 'C','3', 'white' from dual
+--;
+--
+--
+--
+--
+--
+--insert into GameLog(
+--    GameId , 
+--    Player ,
+--    MovePlayed 
+--)
+--select max(GameId),
+--'User1',
+--'A1'
+--from GameInstance;
+--
+--
+--insert into GameLog(
+--    GameId , 
+--    Player ,
+--    MovePlayed ,
+--    DatePlayed
+--)
+--select max(GameId),
+--'User3',
+--'B2',
+--SYSDATE + (1/1440*10)
+--from GameInstance;
+--
+--update UserProfile
+--set CurrentGameId = 1
+--where loginname = 'User1';
+--update UserProfile
+--set CurrentGameId = 1
+--where loginname = 'User2';
+--update UserProfile
+--set CurrentGameId = 3
+--where loginname = 'User3';
 
 commit;
 --select * from UserProfile;

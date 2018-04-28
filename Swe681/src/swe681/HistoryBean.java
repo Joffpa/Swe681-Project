@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.ListDataModel;
 
-import swe681.resources.DataDriver;
 import swe681.resources.GameInstance;
 import swe681.resources.GameLog;
 
@@ -22,12 +21,8 @@ public class HistoryBean  extends BaseBean  {
 	
 	
 	@PostConstruct
-	public void init() {
-		// In @PostConstruct (will be invoked immediately after construction and
-		// dependency/property injection).
-		//TODO: Use the logged in player as the playerLoginName		
-		DataDriver driver = new DataDriver();
-		this.allPastGames = new ListDataModel(driver.getGameHistoryForPlayer("User1"));
+	public void init() {		
+		this.allPastGames = new ListDataModel<GameInstance>(dataDriver.getGameHistoryForPlayer(contextHelper.getLoggedInUser().loginname));
 	}
 
 	
@@ -42,8 +37,7 @@ public class HistoryBean  extends BaseBean  {
 	
 	public String seeHistory() {		
 		GameInstance game = allPastGames.getRowData();
-		DataDriver driver = new DataDriver();
-		this.gameLogForInstance = driver.getGameLogForInstance(game.gameId);
+		this.gameLogForInstance = dataDriver.getGameLogForInstance(game.gameId);
 		
 		return null;
 	}

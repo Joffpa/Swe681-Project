@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import swe681.resources.AppLog;
 import swe681.resources.AuthenticationService;
+import swe681.resources.AuthenticationService.AuthResult;
 import swe681.resources.UserProfile;
 
 import javax.faces.application.FacesMessage;
@@ -65,34 +66,55 @@ public class CreateAccountBean extends BaseBean {
 
 	public String createAccount() {
 		try {
-			if (this.username == null || this.username.isEmpty() || this.loginname == null || this.loginname.isEmpty()
-					|| this.password == null && this.password.isEmpty()
-					|| this.passwordConfirm == null && this.passwordConfirm.isEmpty()) {
+			if (	   this.username == null || this.username.isEmpty() 
+					|| this.loginname == null || this.loginname.isEmpty()
+					|| this.password == null || this.password.isEmpty()
+					|| this.passwordConfirm == null || this.passwordConfirm.isEmpty()) {
 				FacesContext.getCurrentInstance().addMessage("",
-						new FacesMessage("You must enter a login name, password, and password confirmation."));
-				return null;
-			}
-
-			if (!this.loginname.matches("^([A-Za-z0-9]{6,12})$")) {
-				FacesContext.getCurrentInstance().addMessage("",
-						new FacesMessage("Username must be between 6 and 12 characters, and alphanumeric only."));
+						new FacesMessage("You must enter a user name, login name, password, and password confirmation."));
 				return null;
 			}
 			
-			//TODO: Add more input validations
+			if(!this.password.equals(this.passwordConfirm)) {
+				FacesContext.getCurrentInstance().addMessage("",
+						new FacesMessage("Password and Password confirmation do not match."));		
+				return null;
+			}
 			
-			// if we got here, then all validations passed			
-			AuthenticationService auth = new AuthenticationService();			
-			UserProfile user = auth.createAccount(this.username, this.loginname, this.password);
-			if (user!= null) {
-				//put the logged in user object in session
-		        FacesContext context = FacesContext.getCurrentInstance();
-	            context.getExternalContext().getSessionMap().put("user", user);
+			if(!this.username.matches("^([A-Za-z0-9]{5,20})$")) {
+				FacesContext.getCurrentInstance().addMessage("", new FacesMessage("User name must be between 5 and 20 characters, and alphanumeric only."));			
+				return null;
+			}
+			
+			if(!this.loginname.matches("^([A-Za-z0-9]{5,20})$")) {
+				FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Login name must be between 5 and 20 characters, and alphanumeric only."));			
+				return null;
+			}
+			
+			if(!this.password.matches("^([A-Za-z0-9\\!\\@\\#\\$\\%\\^\\&\\*\\?\\.\\,\\;\\:]{5,20})$")) {
+				FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Password must be between 5 and 20 characters, and letters, numbers or one of the following only: [! @ # $ % ^ & * ? . , : ;]."));			
+				return null;
+			}
+			
+			if(!this.passwordConfirm.matches("^([A-Za-z0-9\\!\\@\\#\\$\\%\\^\\&\\*\\?\\.\\,\\;\\:]{5,20})$")) {
+				FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Password confirm must be between 5 and 20 characters, and letters, numbers or one of the following only: [! @ # $ % ^ & * ? . , : ;]."));			
+				return null;
+			}
+			
+			// if we got here, then all validations passed
+			AuthenticationService auth = new AuthenticationService(contextHelper.getRequest(), dataDriver, contextHelper);
+			AuthResult result = auth.createAccount(this.username, this.loginname, this.password);
+			switch (result) {
+			case UserTaken:
+				FacesContext.getCurrentInstance().addMessage("", new FacesMessage("That Username/Loginname is taken, please try again."));
+				break;
+			case UserCreated:
+				AppLog.getLogger().info("User account created: " + auth.user.loginname);
 				return "AccountCreated";
-			}else {
-				FacesContext.getCurrentInstance().addMessage("",
-						new FacesMessage("New account creation failed, please enter a unique username and loginname."));
-			}			
+			case Error:
+				FacesContext.getCurrentInstance().addMessage("", new FacesMessage("An error occurred, please close your browser and try again."));
+				return null;
+			}
 		} catch (Exception e) {
 			AppLog.getLogger().severe("Exception in  CreateAccountBean.createAccount(): " + e.getMessage());
 		}

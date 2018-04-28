@@ -7,9 +7,9 @@ import java.util.logging.SimpleFormatter;
 
 public class AppLog {
 
-	private static Logger LOGGER;
+	private static volatile Logger LOGGER;
 	
-	public static Logger getLogger() {
+	public synchronized static Logger getLogger() {
 		if(LOGGER == null) {
 			LOGGER = Logger.getLogger("AppLogger");
 			//configLogger();

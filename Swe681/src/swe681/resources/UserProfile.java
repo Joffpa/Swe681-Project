@@ -1,15 +1,19 @@
 package swe681.resources;
 
+import java.sql.Timestamp;
+
 public class UserProfile {
 
 	public String username;
 	public String loginname;
-	public String passwordHash;
-	public String hashSalt;
+	public byte[] passwordHash;
+	public byte[] hashSalt;
 	public int currentGameId;
 	public int wins;
 	public int losses;
 	public boolean isInGame;
+	public int passwordAttempts;
+	public Timestamp passwordLockout;
 
 	public String getUsername() {
 		return this.username;
@@ -27,20 +31,20 @@ public class UserProfile {
 		this.loginname = str.trim();
 	}
 
-	public String getPasswordHash() {
+	public byte[] getPasswordHash() {
 		return this.passwordHash;
 	}
 
-	public void setPasswordHash(String str) {
-		this.passwordHash = str.trim();
+	public void setPasswordHash(byte[] str) {
+		this.passwordHash = str;
 	}
 
-	public String getHashSalt() {
+	public byte[] getHashSalt() {
 		return this.hashSalt;
 	}
 
-	public void setHashSalt(String str) {
-		this.hashSalt = str.trim();
+	public void setHashSalt(byte[] str) {
+		this.hashSalt = str;
 	}
 
 	public int getCurrentGameId() {
@@ -65,6 +69,14 @@ public class UserProfile {
 
 	public int getLosses() {
 		return this.losses;
+	}
+	
+	public int getPasswordAttempts() {
+		return this.passwordAttempts;
+	}
+	
+	public Timestamp getPasswordLockout() {
+		return this.passwordLockout;
 	}
 
 	public void setLosses(int id) {

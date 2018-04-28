@@ -7,7 +7,7 @@ public class GameLog {
 	public double gameId;
 	public String player;
 	public String movePlayed;
-	public Date datePlayed;
+	public String datePlayed;
 	
 	public double getGameId() {
 		return this.gameId;
@@ -21,7 +21,8 @@ public class GameLog {
 		return this.movePlayed;
 	}
 	
-	public Date getDatePlayed() {
-		return this.datePlayed;
+	public String getDatePlayed() {
+		String date = new String(this.datePlayed);
+		return date;
 	}
 }

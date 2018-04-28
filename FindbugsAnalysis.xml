@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BugCollection version="3.0.1" sequence="3" timestamp="1524939530211" analysisTimestamp="1524939534125" release="">
+  <Project projectName="Swe681">
+    <Jar>C:\Users\joffp_000\Desktop\SWE 681 001\Programming project\AppCode\Swe681</Jar>
+    <SuppressionFilter>
+      <LastVersion value="-1" relOp="NEQ"/>
+    </SuppressionFilter>
+  </Project>
+  <BugInstance type="UPM_UNCALLED_PRIVATE_METHOD" priority="3" rank="20" abbrev="UPM" category="PERFORMANCE">
+    <Class classname="swe681.GameBean">
+      <SourceLine classname="swe681.GameBean" sourcefile="GameBean.java" sourcepath="swe681/GameBean.java"/>
+    </Class>
+    <Method classname="swe681.GameBean" name="endGame" signature="()V" isStatic="false">
+      <SourceLine classname="swe681.GameBean" start="188" end="188" startBytecode="0" endBytecode="42" sourcefile="GameBean.java" sourcepath="swe681/GameBean.java"/>
+    </Method>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" rank="20" abbrev="UwF" category="STYLE">
+    <Class classname="swe681.GameBean">
+      <SourceLine classname="swe681.GameBean" sourcefile="GameBean.java" sourcepath="swe681/GameBean.java"/>
+    </Class>
+    <Field classname="swe681.GameBean" name="submittedMove" signature="Ljava/lang/String;" isStatic="false">
+      <SourceLine classname="swe681.GameBean" sourcefile="GameBean.java" sourcepath="swe681/GameBean.java"/>
+    </Field>
+    <Method classname="swe681.GameBean" name="submitMove" signature="()Ljava/lang/String;" isStatic="false">
+      <SourceLine classname="swe681.GameBean" start="191" end="242" startBytecode="0" endBytecode="675" sourcefile="GameBean.java" sourcepath="swe681/GameBean.java"/>
+    </Method>
+    <SourceLine classname="swe681.GameBean" start="191" end="191" startBytecode="6" endBytecode="6" sourcefile="GameBean.java" sourcepath="swe681/GameBean.java"/>
+  </BugInstance>
+  <BugInstance type="LI_LAZY_INIT_STATIC" priority="3" rank="17" abbrev="LI" category="MT_CORRECTNESS">
+    <Class classname="swe681.resources.AppLog">
+      <SourceLine classname="swe681.resources.AppLog" sourcefile="AppLog.java" sourcepath="swe681/resources/AppLog.java"/>
+    </Class>
+    <Method classname="swe681.resources.AppLog" name="getLogger" signature="()Ljava/util/logging/Logger;" isStatic="true">
+      <SourceLine classname="swe681.resources.AppLog" start="13" end="17" startBytecode="0" endBytecode="6" sourcefile="AppLog.java" sourcepath="swe681/resources/AppLog.java"/>
+    </Method>
+    <Field classname="swe681.resources.AppLog" name="LOGGER" signature="Ljava/util/logging/Logger;" isStatic="true" role="FIELD_ON">
+      <SourceLine classname="swe681.resources.AppLog" sourcefile="AppLog.java" sourcepath="swe681/resources/AppLog.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.AppLog" start="13" end="14" startBytecode="0" endBytecode="11" sourcefile="AppLog.java" sourcepath="swe681/resources/AppLog.java"/>
+  </BugInstance>
+  <BugInstance type="UPM_UNCALLED_PRIVATE_METHOD" priority="3" rank="20" abbrev="UPM" category="PERFORMANCE">
+    <Class classname="swe681.resources.AppLog">
+      <SourceLine classname="swe681.resources.AppLog" sourcefile="AppLog.java" sourcepath="swe681/resources/AppLog.java"/>
+    </Class>
+    <Method classname="swe681.resources.AppLog" name="configLogger" signature="()V" isStatic="false">
+      <SourceLine classname="swe681.resources.AppLog" start="26" end="36" startBytecode="0" endBytecode="193" sourcefile="AppLog.java" sourcepath="swe681/resources/AppLog.java"/>
+    </Method>
+  </BugInstance>
+  <BugInstance type="URF_UNREAD_FIELD" priority="2" rank="18" abbrev="UrF" category="PERFORMANCE">
+    <Class classname="swe681.resources.AuthenticationService">
+      <SourceLine classname="swe681.resources.AuthenticationService" sourcefile="AuthenticationService.java" sourcepath="swe681/resources/AuthenticationService.java"/>
+    </Class>
+    <Field classname="swe681.resources.AuthenticationService" name="request" signature="Ljavax/servlet/http/HttpServletRequest;" isStatic="false">
+      <SourceLine classname="swe681.resources.AuthenticationService" sourcefile="AuthenticationService.java" sourcepath="swe681/resources/AuthenticationService.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.AuthenticationService" start="28" end="28" startBytecode="6" endBytecode="6" sourcefile="AuthenticationService.java" sourcepath="swe681/resources/AuthenticationService.java"/>
+  </BugInstance>
+  <BugInstance type="DMI_CONSTANT_DB_PASSWORD" priority="2" rank="7" abbrev="Dm" category="SECURITY">
+    <Class classname="swe681.resources.DataDriver">
+      <SourceLine classname="swe681.resources.DataDriver" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+    </Class>
+    <Method classname="swe681.resources.DataDriver" name="&lt;init&gt;" signature="()V" isStatic="false">
+      <SourceLine classname="swe681.resources.DataDriver" start="27" end="36" startBytecode="0" endBytecode="28" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.DataDriver" start="31" end="31" startBytecode="22" endBytecode="22" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+  </BugInstance>
+  <BugInstance type="ODR_OPEN_DATABASE_RESOURCE" priority="2" rank="16" abbrev="ODR" category="BAD_PRACTICE">
+    <Class classname="swe681.resources.DataDriver">
+      <SourceLine classname="swe681.resources.DataDriver" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+    </Class>
+    <Method classname="swe681.resources.DataDriver" name="getGameHistoryRS" signature="(Ljava/lang/String;)Ljava/sql/ResultSet;" isStatic="false">
+      <SourceLine classname="swe681.resources.DataDriver" start="60" end="73" startBytecode="0" endBytecode="31" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+    </Method>
+    <Type descriptor="Ljava/sql/PreparedStatement;" role="TYPE_CLOSEIT">
+      <SourceLine classname="java.sql.PreparedStatement"/>
+    </Type>
+    <SourceLine classname="swe681.resources.DataDriver" start="62" end="62" startBytecode="8" endBytecode="8" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+  </BugInstance>
+  <BugInstance type="ODR_OPEN_DATABASE_RESOURCE" priority="2" rank="16" abbrev="ODR" category="BAD_PRACTICE">
+    <Class classname="swe681.resources.DataDriver">
+      <SourceLine classname="swe681.resources.DataDriver" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+    </Class>
+    <Method classname="swe681.resources.DataDriver" name="getGameInstanceJoinableRS" signature="()Ljava/sql/ResultSet;" isStatic="false">
+      <SourceLine classname="swe681.resources.DataDriver" start="39" end="50" startBytecode="0" endBytecode="23" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+    </Method>
+    <Type descriptor="Ljava/sql/PreparedStatement;" role="TYPE_CLOSEIT">
+      <SourceLine classname="java.sql.PreparedStatement"/>
+    </Type>
+    <SourceLine classname="swe681.resources.DataDriver" start="41" end="41" startBytecode="8" endBytecode="8" sourcefile="DataDriver.java" sourcepath="swe681/resources/DataDriver.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP" priority="2" rank="18" abbrev="EI" category="MALICIOUS_CODE">
+    <Class classname="swe681.resources.GameLog">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Class>
+    <Method classname="swe681.resources.GameLog" name="getDatePlayed" signature="()Ljava/util/Date;" isStatic="false">
+      <SourceLine classname="swe681.resources.GameLog" start="25" end="25" startBytecode="0" endBytecode="46" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Method>
+    <Field classname="swe681.resources.GameLog" name="datePlayed" signature="Ljava/util/Date;" isStatic="false">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.GameLog" start="25" end="25" startBytecode="4" endBytecode="4" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD" priority="2" rank="17" abbrev="UwF" category="STYLE">
+    <Class classname="swe681.resources.GameLog">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Class>
+    <Field classname="swe681.resources.GameLog" name="datePlayed" signature="Ljava/util/Date;" isStatic="false">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.GameLog" start="25" end="25" startBytecode="1" endBytecode="1" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD" priority="2" rank="17" abbrev="UwF" category="STYLE">
+    <Class classname="swe681.resources.GameLog">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Class>
+    <Field classname="swe681.resources.GameLog" name="movePlayed" signature="Ljava/lang/String;" isStatic="false">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.GameLog" start="21" end="21" startBytecode="1" endBytecode="1" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD" priority="2" rank="17" abbrev="UwF" category="STYLE">
+    <Class classname="swe681.resources.GameLog">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Class>
+    <Field classname="swe681.resources.GameLog" name="player" signature="Ljava/lang/String;" isStatic="false">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.GameLog" start="17" end="17" startBytecode="1" endBytecode="1" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD" priority="3" rank="20" abbrev="UwF" category="STYLE">
+    <Class classname="swe681.resources.GameLog">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Class>
+    <Field classname="swe681.resources.GameLog" name="gameId" signature="D" isStatic="false">
+      <SourceLine classname="swe681.resources.GameLog" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.GameLog" start="13" end="13" startBytecode="1" endBytecode="1" sourcefile="GameLog.java" sourcepath="swe681/resources/GameLog.java"/>
+  </BugInstance>
+  <BugInstance type="DM_CONVERT_CASE" priority="3" rank="20" abbrev="Dm" category="I18N" last="0" removedByChange="true">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="playMove" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lswe681/resources/GoLogic$MoveResult;" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="24" end="57" startBytecode="0" endBytecode="345" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="28" end="28" startBytecode="38" endBytecode="38" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+  </BugInstance>
+  <BugInstance type="ES_COMPARING_STRINGS_WITH_EQ" priority="2" rank="11" abbrev="ES" category="BAD_PRACTICE" last="0" removedByChange="true">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="playMove" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lswe681/resources/GoLogic$MoveResult;" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="24" end="57" startBytecode="0" endBytecode="86" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <Type descriptor="Ljava/lang/String;" role="TYPE_FOUND">
+      <SourceLine classname="java.lang.String"/>
+    </Type>
+    <String value="" role="STRING_CONSTANT"/>
+    <Method classname="swe681.resources.GoLogic" name="getColorAtPosition" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="282" end="323" startBytecode="0" endBytecode="509" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="42" end="42" startBytecode="105" endBytecode="105" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.RefComparisonWarningProperty.EMPTY_AND_UNKNOWN" value="true"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveCaptureCheck" signature="(Ljava/lang/String;Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="201" end="236" startBytecode="0" endBytecode="457" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="bottom" register="5" pc="104" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getPositionBelow" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="355" end="377" startBytecode="0" endBytecode="353" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="219" end="219" startBytecode="106" endBytecode="106" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveCaptureCheck" signature="(Ljava/lang/String;Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="201" end="236" startBytecode="0" endBytecode="457" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="colorAtPosition" register="3" pc="18" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getColorAtPosition" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="283" end="324" startBytecode="0" endBytecode="509" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="205" end="205" startBytecode="19" endBytecode="19" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveCaptureCheck" signature="(Ljava/lang/String;Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="201" end="236" startBytecode="0" endBytecode="457" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="left" register="6" pc="143" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getPositionLeft" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="382" end="388" startBytecode="0" endBytecode="188" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="223" end="223" startBytecode="145" endBytecode="145" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveCaptureCheck" signature="(Ljava/lang/String;Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="201" end="236" startBytecode="0" endBytecode="457" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="right" register="7" pc="182" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getPositionRight" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="393" end="399" startBytecode="0" endBytecode="190" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="227" end="227" startBytecode="184" endBytecode="184" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveCaptureCheck" signature="(Ljava/lang/String;Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="201" end="236" startBytecode="0" endBytecode="457" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="top" register="4" pc="65" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getPositionAbove" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="328" end="350" startBytecode="0" endBytecode="353" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="215" end="215" startBytecode="67" endBytecode="67" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveControlCheck" signature="(Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="95" end="126" startBytecode="0" endBytecode="472" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="bottom" register="4" pc="132" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getPositionBelow" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="355" end="377" startBytecode="0" endBytecode="353" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="113" end="113" startBytecode="134" endBytecode="134" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveControlCheck" signature="(Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="95" end="126" startBytecode="0" endBytecode="472" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="colorAtPosition" register="2" pc="18" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getColorAtPosition" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="283" end="324" startBytecode="0" endBytecode="509" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="99" end="99" startBytecode="19" endBytecode="19" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveControlCheck" signature="(Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="95" end="126" startBytecode="0" endBytecode="472" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="left" register="5" pc="170" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getPositionLeft" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="382" end="388" startBytecode="0" endBytecode="188" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="117" end="117" startBytecode="172" endBytecode="172" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveControlCheck" signature="(Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="95" end="126" startBytecode="0" endBytecode="472" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="right" register="6" pc="208" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getPositionRight" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="393" end="399" startBytecode="0" endBytecode="190" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="121" end="121" startBytecode="210" endBytecode="210" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" priority="3" rank="20" abbrev="RCN" category="STYLE">
+    <Class classname="swe681.resources.GoLogic">
+      <SourceLine classname="swe681.resources.GoLogic" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Class>
+    <Method classname="swe681.resources.GoLogic" name="recursiveControlCheck" signature="(Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="swe681.resources.GoLogic" start="95" end="126" startBytecode="0" endBytecode="472" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <LocalVariable name="top" register="3" pc="98" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <Method classname="swe681.resources.GoLogic" name="getPositionAbove" signature="(Ljava/lang/String;)Ljava/lang/String;" isStatic="false" role="METHOD_RETURN_VALUE_OF">
+      <SourceLine classname="swe681.resources.GoLogic" start="328" end="350" startBytecode="0" endBytecode="353" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java"/>
+    </Method>
+    <SourceLine classname="swe681.resources.GoLogic" start="109" end="109" startBytecode="99" endBytecode="99" sourcefile="GoLogic.java" sourcepath="swe681/resources/GoLogic.java" role="SOURCE_REDUNDANT_NULL_CHECK"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP" priority="2" rank="18" abbrev="EI" category="MALICIOUS_CODE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Method classname="swe681.resources.UserProfile" name="getHashSalt" signature="()[B" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" start="43" end="43" startBytecode="0" endBytecode="46" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Method>
+    <Field classname="swe681.resources.UserProfile" name="hashSalt" signature="[B" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.UserProfile" start="43" end="43" startBytecode="4" endBytecode="4" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP" priority="2" rank="18" abbrev="EI" category="MALICIOUS_CODE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Method classname="swe681.resources.UserProfile" name="getPasswordHash" signature="()[B" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" start="35" end="35" startBytecode="0" endBytecode="46" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Method>
+    <Field classname="swe681.resources.UserProfile" name="passwordHash" signature="[B" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.UserProfile" start="35" end="35" startBytecode="4" endBytecode="4" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP" priority="2" rank="18" abbrev="EI" category="MALICIOUS_CODE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Method classname="swe681.resources.UserProfile" name="getPasswordLockout" signature="()Ljava/sql/Timestamp;" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" start="79" end="79" startBytecode="0" endBytecode="46" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Method>
+    <Field classname="swe681.resources.UserProfile" name="passwordLockout" signature="Ljava/sql/Timestamp;" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.UserProfile" start="79" end="79" startBytecode="4" endBytecode="4" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Method classname="swe681.resources.UserProfile" name="setHashSalt" signature="([B)V" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" start="47" end="48" startBytecode="0" endBytecode="61" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Method>
+    <Field classname="swe681.resources.UserProfile" name="hashSalt" signature="[B" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+    <LocalVariable name="str" register="1" pc="2" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="swe681.resources.UserProfile" start="47" end="47" startBytecode="2" endBytecode="2" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Method classname="swe681.resources.UserProfile" name="setPasswordHash" signature="([B)V" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" start="39" end="40" startBytecode="0" endBytecode="61" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Method>
+    <Field classname="swe681.resources.UserProfile" name="passwordHash" signature="[B" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+    <LocalVariable name="str" register="1" pc="2" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="swe681.resources.UserProfile" start="39" end="39" startBytecode="2" endBytecode="2" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+  </BugInstance>
+  <BugInstance type="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD" priority="2" rank="17" abbrev="UuF" category="STYLE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Field classname="swe681.resources.UserProfile" name="isInGame" signature="Z" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" rank="20" abbrev="UwF" category="STYLE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Field classname="swe681.resources.UserProfile" name="loginname" signature="Ljava/lang/String;" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+    <Method classname="swe681.GameBean" name="getCurrentPlayerColor" signature="()Ljava/lang/String;" isStatic="false">
+      <SourceLine classname="swe681.GameBean" start="88" end="95" startBytecode="0" endBytecode="145" sourcefile="GameBean.java" sourcepath="swe681/GameBean.java"/>
+    </Method>
+    <SourceLine classname="swe681.GameBean" start="88" end="88" startBytecode="14" endBytecode="14" sourcefile="GameBean.java" sourcepath="swe681/GameBean.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD" priority="2" rank="17" abbrev="UwF" category="STYLE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Field classname="swe681.resources.UserProfile" name="passwordLockout" signature="Ljava/sql/Timestamp;" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.UserProfile" start="79" end="79" startBytecode="1" endBytecode="1" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD" priority="3" rank="20" abbrev="UwF" category="STYLE">
+    <Class classname="swe681.resources.UserProfile">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Class>
+    <Field classname="swe681.resources.UserProfile" name="passwordAttempts" signature="I" isStatic="false">
+      <SourceLine classname="swe681.resources.UserProfile" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+    </Field>
+    <SourceLine classname="swe681.resources.UserProfile" start="75" end="75" startBytecode="1" endBytecode="1" sourcefile="UserProfile.java" sourcepath="swe681/resources/UserProfile.java"/>
+  </BugInstance>
+  <Errors errors="0" missingClasses="8">
+    <MissingClass>javax.faces.application.FacesMessage</MissingClass>
+    <MissingClass>javax.faces.context.ExternalContext</MissingClass>
+    <MissingClass>javax.faces.context.FacesContext</MissingClass>
+    <MissingClass>javax.servlet.Filter</MissingClass>
+    <MissingClass>javax.servlet.FilterChain</MissingClass>
+    <MissingClass>javax.servlet.http.HttpServletRequest</MissingClass>
+    <MissingClass>javax.servlet.http.HttpServletResponse</MissingClass>
+    <MissingClass>javax.servlet.http.HttpSession</MissingClass>
+  </Errors>
+  <FindBugsSummary timestamp="Sat, 28 Apr 2018 14:18:50 -0400" total_classes="19" referenced_classes="77" total_bugs="32" total_size="842" num_packages="2" java_version="1.8.0_151" vm_version="25.151-b12" cpu_seconds="6.98" clock_seconds="33.65" peak_mbytes="301.30" alloc_mbytes="1801.00" gc_seconds="0.19" priority_3="17" priority_2="15">
+    <PackageStats package="swe681" total_bugs="3" total_types="7" total_size="282" priority_3="3">
+      <ClassStats class="swe681.BaseBean" sourceFile="BaseBean.java" interface="false" size="9" bugs="0"/>
+      <ClassStats class="swe681.CreateAccountBean" sourceFile="CreateAccountBean.java" interface="false" size="46" bugs="0"/>
+      <ClassStats class="swe681.GameBean" sourceFile="GameBean.java" interface="false" size="163" bugs="3" priority_3="3"/>
+      <ClassStats class="swe681.HistoryBean" sourceFile="HistoryBean.java" interface="false" size="9" bugs="0"/>
+      <ClassStats class="swe681.LandingPageBean" sourceFile="LandingPageBean.java" interface="false" size="14" bugs="0"/>
+      <ClassStats class="swe681.LoginBean" sourceFile="LoginBean.java" interface="false" size="32" bugs="0"/>
+      <ClassStats class="swe681.WinsLossesBean" sourceFile="WinsLossesBean.java" interface="false" size="9" bugs="0"/>
+    </PackageStats>
+    <PackageStats package="swe681.resources" total_bugs="29" total_types="12" total_size="560" priority_3="14" priority_2="15">
+      <ClassStats class="swe681.resources.AppLog" sourceFile="AppLog.java" interface="false" size="18" bugs="2" priority_3="2"/>
+      <ClassStats class="swe681.resources.AuthenticationService" sourceFile="AuthenticationService.java" interface="false" size="45" bugs="1" priority_2="1"/>
+      <ClassStats class="swe681.resources.AuthenticationService$AuthResult" sourceFile="AuthenticationService.java" interface="false" size="12" bugs="0"/>
+      <ClassStats class="swe681.resources.AuthorizationFilter" sourceFile="AuthorizationFilter.java" interface="false" size="28" bugs="0"/>
+      <ClassStats class="swe681.resources.ContextHelper" sourceFile="ContextHelper.java" interface="false" size="20" bugs="0"/>
+      <ClassStats class="swe681.resources.DataDriver" sourceFile="DataDriver.java" interface="false" size="67" bugs="3" priority_2="3"/>
+      <ClassStats class="swe681.resources.GameInstance" sourceFile="GameInstance.java" interface="false" size="30" bugs="0"/>
+      <ClassStats class="swe681.resources.GameLog" sourceFile="GameLog.java" interface="false" size="15" bugs="5" priority_3="1" priority_2="4"/>
+      <ClassStats class="swe681.resources.GoLogic" sourceFile="GoLogic.java" interface="false" size="254" bugs="10" priority_3="10"/>
+      <ClassStats class="swe681.resources.GoLogic$MoveResult" sourceFile="GoLogic.java" interface="false" size="14" bugs="0"/>
+      <ClassStats class="swe681.resources.InputValidator" sourceFile="InputValidator.java" interface="false" size="3" bugs="0"/>
+      <ClassStats class="swe681.resources.UserProfile" sourceFile="UserProfile.java" interface="false" size="54" bugs="8" priority_3="1" priority_2="7"/>
+    </PackageStats>
+    <FindBugsProfile>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.ClassDataAnalysisEngine" totalMilliseconds="420" invocations="661" avgMicrosecondsPerInvocation="635" maxMicrosecondsPerInvocation="12071" standardDeviationMircosecondsPerInvocation="491"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.ClassInfoAnalysisEngine" totalMilliseconds="172" invocations="656" avgMicrosecondsPerInvocation="262" maxMicrosecondsPerInvocation="3853" standardDeviationMircosecondsPerInvocation="466"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.MutableStaticFields" totalMilliseconds="156" invocations="19" avgMicrosecondsPerInvocation="8232" maxMicrosecondsPerInvocation="155662" standardDeviationMircosecondsPerInvocation="34749"/>
+      <ClassProfile name="edu.umd.cs.findbugs.FindBugs2" totalMilliseconds="135" invocations="2" avgMicrosecondsPerInvocation="67960" maxMicrosecondsPerInvocation="98040" standardDeviationMircosecondsPerInvocation="30079"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FieldItemSummary" totalMilliseconds="63" invocations="77" avgMicrosecondsPerInvocation="828" maxMicrosecondsPerInvocation="6653" standardDeviationMircosecondsPerInvocation="1469"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FindNoSideEffectMethods" totalMilliseconds="57" invocations="77" avgMicrosecondsPerInvocation="742" maxMicrosecondsPerInvocation="5724" standardDeviationMircosecondsPerInvocation="1200"/>
+      <ClassProfile name="edu.umd.cs.findbugs.OpcodeStack$JumpInfoFactory" totalMilliseconds="54" invocations="327" avgMicrosecondsPerInvocation="167" maxMicrosecondsPerInvocation="3634" standardDeviationMircosecondsPerInvocation="305"/>
+      <ClassProfile name="edu.umd.cs.findbugs.ba.npe.NullDerefAndRedundantComparisonFinder" totalMilliseconds="48" invocations="132" avgMicrosecondsPerInvocation="370" maxMicrosecondsPerInvocation="6315" standardDeviationMircosecondsPerInvocation="898"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.BuildStringPassthruGraph" totalMilliseconds="41" invocations="77" avgMicrosecondsPerInvocation="544" maxMicrosecondsPerInvocation="25579" standardDeviationMircosecondsPerInvocation="2906"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.UnconditionalValueDerefDataflowFactory" totalMilliseconds="33" invocations="132" avgMicrosecondsPerInvocation="252" maxMicrosecondsPerInvocation="3185" standardDeviationMircosecondsPerInvocation="468"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.IsNullValueDataflowFactory" totalMilliseconds="32" invocations="132" avgMicrosecondsPerInvocation="244" maxMicrosecondsPerInvocation="1997" standardDeviationMircosecondsPerInvocation="391"/>
+      <ClassProfile name="edu.umd.cs.findbugs.util.TopologicalSort" totalMilliseconds="29" invocations="602" avgMicrosecondsPerInvocation="49" maxMicrosecondsPerInvocation="493" standardDeviationMircosecondsPerInvocation="69"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.TypeDataflowFactory" totalMilliseconds="26" invocations="135" avgMicrosecondsPerInvocation="196" maxMicrosecondsPerInvocation="2654" standardDeviationMircosecondsPerInvocation="373"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.ValueNumberDataflowFactory" totalMilliseconds="26" invocations="137" avgMicrosecondsPerInvocation="191" maxMicrosecondsPerInvocation="2005" standardDeviationMircosecondsPerInvocation="348"/>
+    </FindBugsProfile>
+  </FindBugsSummary>
+  <ClassFeatures></ClassFeatures>
+  <History>
+    <AppVersion sequence="0" timestamp="1524938959053" release="" codeSize="842" numClasses="19"/>
+    <AppVersion sequence="1" timestamp="1524939272167" release="" codeSize="842" numClasses="19"/>
+    <AppVersion sequence="2" timestamp="1524939446313" release="" codeSize="842" numClasses="19"/>
+  </History>
+</BugCollection>

@@ -36,8 +36,8 @@
 			</h:dataTable>
 			<br />
 			<br />
-			<h:button value="Start New Game"
-				action="#{landingPageBean.startNewGame}"></h:button>
+			<h:commandButton value="Start New Game"
+				action="#{landingPageBean.startNewGame}"></h:commandButton>
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" rendered="#{user.isInGame}"> 
@@ -48,6 +48,8 @@
 	<h:button value="See Wins/Losses" outcome="WinLoss"></h:button>	
 	&nbsp;
 	<h:button value="See Game History" outcome="History"></h:button>
+	&nbsp;
+	<h:commandButton value="Logout" action="#{landingPageBean.logout}"></h:commandButton>
 	</h:form>
 </h:body>
 </html>
