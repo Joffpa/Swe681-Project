@@ -1,7 +1,5 @@
 package swe681.resources;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 public class GameInstance {
 	public int gameId ;

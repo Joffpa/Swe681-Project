@@ -55,10 +55,6 @@
 				rendered="#{!gameBean.waitingForAnotherPlayer and !gameBean.isGameOver}">
 
 				<p>
-					<label>Current Player Turn: </label>
-					#{gameBean.gameInstance.currentPlayerTurn}
-				</p>
-				<p>
 					<label>Your color: </label> #{gameBean.currentPlayerColor}
 				</p>
 				<p>
@@ -74,7 +70,7 @@
 
 				<p>
 					<label>Number of passes:</label>
-					#{gameBean.gameInstance.NumPasses}
+					#{gameBean.gameInstance.numPasses}
 				</p>
 
 				<h3>Game Board:</h3>

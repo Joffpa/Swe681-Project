@@ -2,7 +2,6 @@ package swe681;
 
 import swe681.resources.*;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +39,7 @@ public class LandingPageBean extends BaseBean {
 	}
 
 	public String joinGame(GameInstance game) {
+		AppLog.getLogger().info("Request to join game by user: " + contextHelper.getLoggedInUser().loginname + ", " + game.gameId);
 		try {
 			// TODO: check to make sure user is allowed to join this game
 			// is the player already in a game?
@@ -79,6 +79,7 @@ public class LandingPageBean extends BaseBean {
 	}
 
 	public String startNewGame() {
+		AppLog.getLogger().info("Request to start new game bu user: " + contextHelper.getLoggedInUser().loginname);
 		try {
 			// check that this user is not already in a game
 			UserProfile user = contextHelper.getLoggedInUser();

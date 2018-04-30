@@ -43,7 +43,7 @@ public class GoLogic {
 			if (!getColorAtPosition(move).equals("")) {
 				return MoveResult.MoveTaken;
 			} else if (capture != null && !capture.isEmpty()
-					&& getColorAtPosition(move).equals(getColorAtPosition(capture))) {
+					&& color.equals(getColorAtPosition(capture))) {
 				return MoveResult.CaptureInvalid;
 			}
 			// move was not a pass, play the move

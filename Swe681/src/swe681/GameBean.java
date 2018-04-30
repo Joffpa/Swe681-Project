@@ -7,10 +7,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
-import org.apache.tomcat.jni.User;
-
-import com.sun.xml.rpc.processor.modeler.j2ee.xml.string;
 
 import swe681.resources.AppLog;
 import swe681.resources.GameInstance;
@@ -33,6 +29,9 @@ public class GameBean extends BaseBean {
 	public boolean lost;
 	public boolean tie;
 	
+	public GameBean() {
+		super();
+	}
 
 	private UserProfile currentUser;
 
@@ -85,13 +84,18 @@ public class GameBean extends BaseBean {
 	}
 
 	public String getCurrentPlayerColor() {
-		if (this.currentUser.loginname.equals(this.gameInstance.player1)) {
-			return "black";
-		} else if (this.currentUser.loginname.equals(this.gameInstance.player2)) {
-			return "white";
-		} else {
-			FacesContext.getCurrentInstance().addMessage("",
-					new FacesMessage("You are not a valid player for this game."));
+		try {
+			if (this.currentUser.loginname.equals(this.gameInstance.player1)) {
+				return "black";
+			} else if (this.currentUser.loginname.equals(this.gameInstance.player2)) {
+				return "white";
+			} else {
+				FacesContext.getCurrentInstance().addMessage("",
+						new FacesMessage("You are not a valid player for this game."));
+				return "";
+			}
+		} catch (Exception e) {
+			AppLog.getLogger().severe("Exception in DataDriver.getCurrentPlayerColor: " + e.getMessage());
 			return "";
 		}
 	}
@@ -108,7 +112,7 @@ public class GameBean extends BaseBean {
 			this.isInvalid = false;
 
 			currentUser = contextHelper.getLoggedInUser();
-			//make sure we have latest data for user
+			// make sure we have latest data for user
 			currentUser = dataDriver.getPlayerByLoginname(currentUser.loginname);
 			contextHelper.setLoggedInUser(currentUser);
 			this.gameInstance = dataDriver.getGameInstanceDetails(currentUser.currentGameId);
@@ -153,7 +157,8 @@ public class GameBean extends BaseBean {
 				long fiveMins = TimeUnit.MINUTES.toMillis(5);
 				java.util.Date date = new java.util.Date();
 				long currTime = date.getTime();
-				if (this.gameInstance.timeSinceLastMove > 0 && currTime - this.gameInstance.timeSinceLastMove > fiveMins) {
+				if (this.gameInstance.timeSinceLastMove > 0
+						&& currTime - this.gameInstance.timeSinceLastMove > fiveMins) {
 					// it's been longer than 5 mins, the current player looses
 					String winner = "";
 					String looser = "";
@@ -183,61 +188,68 @@ public class GameBean extends BaseBean {
 		}
 	}
 
-	private void endGame() {
-
-	}
-
 	public String submitMove() {
-		if (!submittedMove.matches("^([A-I][0-8]|(PASS)|(pass)|(Pass))$")) {
-			FacesContext.getCurrentInstance().addMessage("", new FacesMessage(
-					"That is not a valid move, enter the letter and number you want to play (e.g. A1) or PASS to pass turn."));
-			return null;
-		}
-		if (submittedCapture != null && !submittedCapture.isEmpty() && !submittedCapture.matches("^([A-I][0-8])$")) {
-			FacesContext.getCurrentInstance().addMessage("", new FacesMessage(
-					"That is not a valid capture, enter a letter and number of a piece in a group you want to capture (e.g. A1), or leave blank if you don't want to capture any pieces."));
-			return null;
-		}
-
-		GoLogic go = new GoLogic(this.gameInstance);
-		MoveResult result = go.playMove(getCurrentPlayerColor(), submittedMove, submittedCapture);
-
-		switch (result) {
-		case MoveInvalid:
-			FacesContext.getCurrentInstance().addMessage("",
-					new FacesMessage("That was not a valid move, please try again."));
-			break;
-		case MoveTaken:
-			FacesContext.getCurrentInstance().addMessage("",
-					new FacesMessage("That space is not empty, try another move."));
-			break;
-		case CaptureInvalid:
-			FacesContext.getCurrentInstance().addMessage("",
-					new FacesMessage("You cannot capture your own piece, try another move or capture."));
-			break;
-		case MoveSuccess:
-			dataDriver.updateGameData(this.gameInstance, currentUser.username, submittedMove);
-			this.isLoggedInUsersTurn = false;
-			break;
-		case GameOver:
-			setWinner();
-			String winner = "";
-			String looser = "";
-			if (this.gameInstance.player1FinalScore > this.gameInstance.player2FinalScore) {
-				winner = this.gameInstance.player1;
-				looser = this.gameInstance.player2;
-			} else {
-				winner = this.gameInstance.player2;
-				looser = this.gameInstance.player1;
+		try {
+			if (!submittedMove.matches("^([A-I][0-8]|(PASS)|(pass)|(Pass))$")) {
+				FacesContext.getCurrentInstance().addMessage("", new FacesMessage(
+						"That is not a valid move, enter the letter and number you want to play (e.g. A1) or PASS to pass turn."));
+				return null;
 			}
-			dataDriver.updateGameData(this.gameInstance, currentUser.username, submittedMove);
-			dataDriver.updateWinnerAndLooser(winner, looser);
-			dataDriver.clearCurrentGameForUser(this.gameInstance.player1);
-			dataDriver.clearCurrentGameForUser(this.gameInstance.player2);
-			break;
-		default:
-			this.isLoggedInUsersTurn = false;
-			break;
+			if (submittedCapture != null && !submittedCapture.isEmpty()
+					&& !submittedCapture.matches("^([A-I][0-8])$")) {
+				FacesContext.getCurrentInstance().addMessage("", new FacesMessage(
+						"That is not a valid capture, enter a letter and number of a piece in a group you want to capture (e.g. A1), or leave blank if you don't want to capture any pieces."));
+				return null;
+			}
+
+			GoLogic go = new GoLogic(this.gameInstance);
+			MoveResult result = go.playMove(getCurrentPlayerColor(), submittedMove, submittedCapture);
+
+			switch (result) {
+			case MoveInvalid:
+				AppLog.getLogger().info("User tried to make an invalid move: " + this.currentUser.loginname + ", " + this.submittedMove);
+				FacesContext.getCurrentInstance().addMessage("",
+						new FacesMessage("That was not a valid move, please try again."));
+				break;
+			case MoveTaken:
+				AppLog.getLogger().info("User tried to move to a spot that was already taken: " + this.currentUser.loginname + ", " + this.submittedMove);
+				FacesContext.getCurrentInstance().addMessage("",
+						new FacesMessage("That space is not empty, try another move."));
+				break;
+			case CaptureInvalid:
+				AppLog.getLogger().info("User tried to make an illegal capture: " + this.currentUser.loginname + ", " + this.submittedCapture);
+				FacesContext.getCurrentInstance().addMessage("",
+						new FacesMessage("You cannot capture your own piece, try another move or capture."));
+				break;
+			case MoveSuccess:
+				AppLog.getLogger().info("User made a successful move: " + this.currentUser.loginname + ", " + this.submittedMove);
+				dataDriver.updateGameData(this.gameInstance, currentUser.username, submittedMove);
+				this.isLoggedInUsersTurn = false;
+				break;
+			case GameOver:
+				setWinner();
+				String winner = "";
+				String looser = "";
+				this.isGameOver = true;
+				if (this.gameInstance.player1FinalScore > this.gameInstance.player2FinalScore) {
+					winner = this.gameInstance.player1;
+					looser = this.gameInstance.player2;
+				} else {
+					winner = this.gameInstance.player2;
+					looser = this.gameInstance.player1;
+				}
+				dataDriver.updateGameData(this.gameInstance, currentUser.username, submittedMove);
+				dataDriver.updateWinnerAndLooser(winner, looser);
+				dataDriver.clearCurrentGameForUser(this.gameInstance.player1);
+				dataDriver.clearCurrentGameForUser(this.gameInstance.player2);
+				AppLog.getLogger().info("Game ended: " + this.gameInstance.gameId);
+				break;
+			default:
+				this.isLoggedInUsersTurn = false;
+				break;
+			}
+		} catch (Exception e) {
+			AppLog.getLogger().severe("Exception in GameBean.submitMove: " + e.getMessage());
 		}
 		return null;
 	}

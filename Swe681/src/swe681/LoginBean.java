@@ -2,14 +2,10 @@ package swe681;
 
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
 
 import swe681.resources.AppLog;
 import swe681.resources.AuthenticationService;
 import swe681.resources.AuthenticationService.AuthResult;
-import swe681.resources.UserProfile;
-
-import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -22,7 +18,6 @@ public class LoginBean extends BaseBean {
 
 	public LoginBean() {
 		super();
-		System.out.println(getClass().getClassLoader().getResource("logging.properties"));
 	}
 
 	public LoginBean(String loginname, String password) {
@@ -48,6 +43,7 @@ public class LoginBean extends BaseBean {
 	}
 
 	public String login() {
+		try {
 		if (this.loginname == null || this.loginname.isEmpty() || this.password == null || this.password.isEmpty()) {
 			FacesContext.getCurrentInstance().addMessage("",
 					new FacesMessage("You must enter a login name and password."));
@@ -82,6 +78,10 @@ public class LoginBean extends BaseBean {
 			AppLog.getLogger().info("Login failed for user: " + this.loginname);
 			FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Login failed, please try again."));
 			return null;
+		}
+		}catch(Exception e) {
+			AppLog.getLogger().info("Excpetion in LoginBean.login: " + this.loginname);		
+			return null;	
 		}
 	}
 

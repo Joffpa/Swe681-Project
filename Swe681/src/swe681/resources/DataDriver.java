@@ -1,25 +1,16 @@
 package swe681.resources;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import javax.swing.table.DefaultTableModel;
 
 public class DataDriver {
 
@@ -33,7 +24,7 @@ public class DataDriver {
 			DataSource ds = (DataSource) envContext.lookup("jdbc/Swe681");
 			conn = ds.getConnection();
 		} catch (Exception ex) {
-			System.out.println("exception: " + ex.getMessage());
+			System.out.println("exception initalizing DataDriver: " + ex.getMessage());
 			ex.printStackTrace();
 		}
 	}
@@ -71,7 +62,7 @@ public class DataDriver {
 		}
 		return true;
 	}
-	
+
 	public boolean setPasswordLockout(String loginname, Timestamp time) {
 		try {
 			pStmt = conn.prepareStatement("UPDATE UserProfile SET PasswordLockout = ? WHERE Loginname = ?");
@@ -81,12 +72,11 @@ public class DataDriver {
 			closePrepSatement();
 		} catch (Exception e) {
 			AppLog.getLogger()
-					.severe("There was an exception running DataDriver.setPasswordAttempts: " + e.getMessage());
+					.severe("There was an exception running DataDriver.setPasswordLockout: " + e.getMessage());
 			return false;
 		}
 		return true;
 	}
-	
 
 	public boolean updateWinnerAndLooser(String winner, String looser) {
 		try {
@@ -100,7 +90,7 @@ public class DataDriver {
 			closePrepSatement();
 		} catch (Exception e) {
 			AppLog.getLogger()
-					.severe("There was an exception running DataDriver.clearCurrentGameForUser: " + e.getMessage());
+					.severe("There was an exception running DataDriver.updateWinnerAndLooser: " + e.getMessage());
 			return false;
 		}
 		return true;
@@ -220,7 +210,6 @@ public class DataDriver {
 	}
 
 	public boolean logGameMove(int gameId, String player, String move) {
-		int rowsUpdated = 0;
 		try {
 			pStmt = conn.prepareStatement(
 					"INSERT INTO GameLog(GameId, Player, MovePlayed, DatePlayed) SELECT ?, ?, ?, ? from dual");
@@ -229,7 +218,7 @@ public class DataDriver {
 			pStmt.setString(3, move);
 			pStmt.setString(4,
 					new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Timestamp(System.currentTimeMillis())));
-			rowsUpdated = pStmt.executeUpdate();
+			pStmt.executeUpdate();
 			closePrepSatement();
 		} catch (Exception e) {
 			AppLog.getLogger().severe("There was an exception running DataDriver.logGameMove: " + e.getMessage());
@@ -275,28 +264,37 @@ public class DataDriver {
 	}
 
 	public GameInstance getGameInstanceDetails(int gameId) {
-		ResultSet rsInstance = getGameInstanceRS(gameId);
-		ArrayList<GameInstance> games = mapResultSetToGameInstance(rsInstance);
-		closeRS(rsInstance);
-		closePrepSatement();
-		if (games != null && !games.isEmpty()) {
-			GameInstance game = games.get(0);
-			ResultSet rsState = getGameStateRS(gameId);
-			game.gameState = mapResultSetToStringArray(rsState);
-			closeRS(rsState);
+		try {
+			ResultSet rsInstance = getGameInstanceRS(gameId);
+			ArrayList<GameInstance> games = mapResultSetToGameInstance(rsInstance);
+			closeRS(rsInstance);
 			closePrepSatement();
-			return game;
+			if (games != null && !games.isEmpty()) {
+				GameInstance game = games.get(0);
+				ResultSet rsState = getGameStateRS(gameId);
+				game.gameState = mapResultSetToStringArray(rsState);
+				closeRS(rsState);
+				closePrepSatement();
+				return game;
+			}
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.getGameInstanceDetails: " + e.getMessage());
 		}
 		return null;
 	}
 
 	public ArrayList<UserProfile> getAllPlayers() {
-		ResultSet rs = this.getAllPlayersRS();
-		ArrayList<UserProfile> players = this.mapResultSetToUserProfiles(rs);
-		closeRS(rs);
-		closePrepSatement();
-		return players;
-
+		try {
+			ResultSet rs = this.getAllPlayersRS();
+			ArrayList<UserProfile> players = this.mapResultSetToUserProfiles(rs);
+			closeRS(rs);
+			closePrepSatement();
+			return players;
+		} catch (Exception e) {
+			AppLog.getLogger().severe("There was an exception running DataDriver.getAllPlayers: " + e.getMessage());
+		}
+		return null;
 	}
 
 	private ResultSet getAllPlayersRS() {
@@ -312,48 +310,66 @@ public class DataDriver {
 	}
 
 	public UserProfile getPlayerByLoginname(String loginname) {
-		ResultSet rs = getPlayerByLoginnameRS(loginname);
-		if (rs == null) {
-			return null;
+		try {
+			ResultSet rs = getPlayerByLoginnameRS(loginname);
+			if (rs == null) {
+				return null;
+			}
+			ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
+			if (users != null && !users.isEmpty()) {
+				return users.get(0);
+			}
+			closeRS(rs);
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger()
+					.severe("There was an exception running DataDriver.getPlayerByLoginname: " + e.getMessage());
 		}
-		ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
-		if (users != null && !users.isEmpty()) {
-			return users.get(0);
-		}
-		closeRS(rs);
-		closePrepSatement();
 		return null;
 	}
 
 	public boolean usernameOrLoginnameAvailable(String username, String loginname) {
-		ResultSet rs = getPlayerByUsernameOrLoginnameRS(username, loginname);
-		if (rs == null) {
-			return false; // error occurred in check, assume username is taken
+		try {
+			ResultSet rs = getPlayerByUsernameOrLoginnameRS(username, loginname);
+			if (rs == null) {
+				return false; // error occurred in check, assume username is taken
+			}
+			ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
+			closeRS(rs);
+			closePrepSatement();
+			if (users == null || users.isEmpty()) {
+				return true;
+			}
+		} catch (Exception e) {
+			AppLog.getLogger().severe(
+					"There was an exception running DataDriver.usernameOrLoginnameAvailable: " + e.getMessage());
 		}
-		ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
-		if (users == null || users.isEmpty()) {
-			return true;
-		}
-		closeRS(rs);
-		closePrepSatement();
 		return false;
 	}
 
 	public UserProfile createUserProfile(String username, String loginname, byte[] pass, byte[] salt) {
-		boolean userCreated = insertUserProfile(username, loginname, pass, salt);
-		if (!userCreated) {
-			return null;
+		try {
+			boolean userCreated = insertUserProfile(username, loginname, pass, salt);
+			if (!userCreated) {
+				return null;
+			}
+			ResultSet rs = getPlayerByLoginnameRS(loginname);
+			if (rs == null) {
+				closePrepSatement();
+				return null;
+			}
+			ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
+			if (users != null && !users.isEmpty()) {
+				closeRS(rs);
+				closePrepSatement();
+				return users.get(0);
+			}
+			closeRS(rs);
+			closePrepSatement();
+		} catch (Exception e) {
+			AppLog.getLogger().severe(
+					"There was an exception running DataDriver.createUserProfile: " + e.getMessage());
 		}
-		ResultSet rs = getPlayerByLoginnameRS(loginname);
-		if (rs == null) {
-			return null;
-		}
-		ArrayList<UserProfile> users = this.mapResultSetToUserProfiles(rs);
-		if (users != null && !users.isEmpty()) {
-			return users.get(0);
-		}
-		closeRS(rs);
-		closePrepSatement();
 		return null;
 	}
 
@@ -372,7 +388,7 @@ public class DataDriver {
 			closePrepSatement();
 		} catch (Exception e) {
 			AppLog.getLogger()
-					.severe("There was an exception running DataDriver.getPlayerByLoginnameRS: " + e.getMessage());
+					.severe("There was an exception running DataDriver.insertUserProfile: " + e.getMessage());
 		}
 		return rowsUpdated > 0;
 	}
@@ -401,13 +417,13 @@ public class DataDriver {
 			rs = pStmt.executeQuery();
 		} catch (Exception e) {
 			AppLog.getLogger()
-					.severe("There was an exception running DataDriver.getPlayerByLoginnameRS: " + e.getMessage());
+					.severe("There was an exception running DataDriver.getPlayerByUsernameOrLoginnameRS: " + e.getMessage());
 		}
 		return rs;
 	}
 
 	private ArrayList<UserProfile> mapResultSetToUserProfiles(ResultSet rs) {
-		ArrayList ll = new ArrayList<UserProfile>();
+		ArrayList<UserProfile> ll = new ArrayList<UserProfile>();
 		if (rs == null) {
 			return ll;
 		}
@@ -573,7 +589,7 @@ public class DataDriver {
 	}
 
 	private ArrayList<GameInstance> mapResultSetToGameInstance(ResultSet rs) {
-		ArrayList ll = new ArrayList<GameInstance>();
+		ArrayList<GameInstance> ll = new ArrayList<GameInstance>();
 		if (rs == null) {
 			return ll;
 		}
@@ -606,6 +622,7 @@ public class DataDriver {
 				game.player1FinalScore = player1FinalScore;
 				game.player2FinalScore = player2FinalScore;
 				game.info = info;
+				game.timeSinceLastMove = timeSinceLastMove;
 
 				ll.add(game);
 			}
@@ -674,7 +691,7 @@ public class DataDriver {
 	}
 
 	private ArrayList<GameLog> mapResultSetToGameLog(ResultSet rs) {
-		ArrayList ll = new ArrayList<GameLog>();
+		ArrayList<GameLog> ll = new ArrayList<GameLog>();
 		try {
 
 			// Fetch each row from the result set

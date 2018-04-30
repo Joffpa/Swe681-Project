@@ -1,7 +1,6 @@
 package swe681;
 
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import swe681.resources.ContextHelper;
@@ -21,5 +20,6 @@ public class BaseBean {
     public void setHeaders() {
         HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
         response.setHeader("Cache-Control", "no-cache, no-store");
+        response.setHeader("Pragma", "no-cache");
     }        
 }

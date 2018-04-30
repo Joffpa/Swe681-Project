@@ -1,6 +1,5 @@
 package swe681.resources;
 
-import java.util.Date;
 
 public class GameLog {
 

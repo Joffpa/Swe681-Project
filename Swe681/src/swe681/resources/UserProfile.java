@@ -32,19 +32,19 @@ public class UserProfile {
 	}
 
 	public byte[] getPasswordHash() {
-		return this.passwordHash;
+		return this.passwordHash.clone();
 	}
 
 	public void setPasswordHash(byte[] str) {
-		this.passwordHash = str;
+		this.passwordHash = str.clone();
 	}
 
 	public byte[] getHashSalt() {
-		return this.hashSalt;
+		return this.hashSalt.clone();
 	}
 
 	public void setHashSalt(byte[] str) {
-		this.hashSalt = str;
+		this.hashSalt = str.clone();
 	}
 
 	public int getCurrentGameId() {
@@ -76,7 +76,10 @@ public class UserProfile {
 	}
 	
 	public Timestamp getPasswordLockout() {
-		return this.passwordLockout;
+		if(this.passwordLockout == null) {
+			return null;
+		}
+		return new Timestamp(this.passwordLockout.getTime());
 	}
 
 	public void setLosses(int id) {

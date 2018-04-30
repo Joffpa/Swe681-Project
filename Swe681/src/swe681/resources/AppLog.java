@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class AppLog {
+	
+	private final String LOGFILE = "C:\\logfile.log";
 
 	private static volatile Logger LOGGER;
 	
@@ -21,10 +23,9 @@ public class AppLog {
     private void configLogger() {
         FileHandler fh;  
 
-        try {  
-
+        try { 
             // This block configure the logger with handler and formatter  
-            fh = new FileHandler("C:\\logfile.log");  
+            fh = new FileHandler(LOGFILE);  
             LOGGER.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();  
             fh.setFormatter(formatter);   

@@ -2,12 +2,10 @@ package swe681;
 
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
 
 import swe681.resources.AppLog;
 import swe681.resources.AuthenticationService;
 import swe681.resources.AuthenticationService.AuthResult;
-import swe681.resources.UserProfile;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -107,12 +105,16 @@ public class CreateAccountBean extends BaseBean {
 			switch (result) {
 			case UserTaken:
 				FacesContext.getCurrentInstance().addMessage("", new FacesMessage("That Username/Loginname is taken, please try again."));
+				AppLog.getLogger().info("User tried to create account, but name was already taken: " +this.username + ", " + this.loginname );
 				break;
 			case UserCreated:
 				AppLog.getLogger().info("User account created: " + auth.user.loginname);
 				return "AccountCreated";
 			case Error:
+				AppLog.getLogger().info("Error occurred trying to create account: " + this.username + ", " + this.loginname );
 				FacesContext.getCurrentInstance().addMessage("", new FacesMessage("An error occurred, please close your browser and try again."));
+				return null;
+			default:
 				return null;
 			}
 		} catch (Exception e) {

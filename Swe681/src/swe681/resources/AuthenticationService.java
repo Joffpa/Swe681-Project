@@ -9,13 +9,11 @@ import java.util.Arrays;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationService {
 
 	public UserProfile user;
-	private HttpServletRequest request;
 	private DataDriver dataDriver;
 	private ContextHelper contextHelper;
 	static final int HASH_ITERATIONS = 10;
@@ -26,7 +24,6 @@ public class AuthenticationService {
 	};
 
 	public AuthenticationService(HttpServletRequest request, DataDriver dataDriver, ContextHelper contextHelper) {
-		this.request = request;
 		this.dataDriver = dataDriver;
 		this.contextHelper = contextHelper;
 	}
